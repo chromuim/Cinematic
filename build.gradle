@@ -21,3 +21,18 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    minSdkVersion = 16
+    targetSdkVersion = 25
+    compileSdkVersion = 25
+    buildToolsVersion = "25.0.2"
+
+    supportLibraryVersion = '25.3.1'
+    guaveVersion = '21.0'
+
+    //testing Util
+    junitVersion = '4.12'
+    mockitoVersion = '2.8.9'
+    espressoVersion = '2.2.2'
+}
