@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- @Todo add icons -->
+  <!--<group android:checkableBehavior="single">-->
+  <item
+    android:id="@+id/drawer_explore_action"
+    android:checked="true"
+    android:icon="@drawable/ic_dashboard"
+    android:orderInCategory="1"
+    android:title="@string/drawer_explore_title"/>
+
+  <item
+    android:id="@+id/drawer_favourite_action"
+    android:checked="false"
+    android:icon="@drawable/ic_favorite"
+    android:orderInCategory="2"
+    android:title="@string/drawer_favourites_title"/>
+  <!--</group>-->
+
+</menu>

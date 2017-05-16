@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import com.google.common.base.Objects;
 
 /**
- * Created by nero on 14.05.17.
+ * Created by chromuim on 14.05.17.
  */
 
 public final class Movie {
