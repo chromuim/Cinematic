@@ -29,7 +29,9 @@ ext {
     buildToolsVersion = "25.0.2"
 
     supportLibraryVersion = '25.3.1'
-    guaveVersion = '21.0'
+    guaveVersion = '20.0'
+    butterKnifeVersion = '8.5.1'
+    PicassoVersion = '2.5.2'
 
     //testing Util
     junitVersion = '4.12'
