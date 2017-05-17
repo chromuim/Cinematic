@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import java.util.List;
 import me.chromuim.cinematic.R;
+import me.chromuim.cinematic.core.api.Constants;
 import me.chromuim.cinematic.data.Movie;
 import me.chromuim.cinematic.movies.MoviesAdapter.MovieHolder;
 
@@ -51,7 +52,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MovieHolder> {
 
   @Override
   public void onBindViewHolder(MovieHolder holder, int position) {
-    String fullPath = getItem(position).getPosterPath();
+    String moviePath = getItem(position).getPosterPath();
+    String fullPath = Constants.IMAGE_BASE_URL + Constants.IMAGE_SIZE + moviePath;
     Picasso.with(mContext).load(fullPath).into(holder.mImageView);
   }
 

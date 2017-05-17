@@ -3,6 +3,7 @@ package me.chromuim.cinematic.data;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.google.common.base.Objects;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by chromuim on 14.05.17.
@@ -10,21 +11,26 @@ import com.google.common.base.Objects;
 
 public final class Movie {
 
-
+  @SerializedName("id")
   private final int mId;
 
   @Nullable
+  @SerializedName("poster_path")
   private final String mPosterPath;
 
   @NonNull
+  @SerializedName("title")
   private final String mTitle;
 
   @NonNull
+  @SerializedName("overview")
   private final String mOverview;
 
+  @SerializedName("vote_average")
   private final float mAverage;
 
   @NonNull
+  @SerializedName("release_date")
   private final String mReleaseDate;
 
   public Movie(int id, @NonNull String title) {

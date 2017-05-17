@@ -22,7 +22,7 @@ public class MoviesRepository implements MoviesDataSource {
   private final MoviesDataSource mLocalDataSource;
 
   private final MoviesDataSource mRemoteDataSource;
-  boolean mCacheIsDirty = false;
+  private boolean mCacheIsDirty = false;
 
   @VisibleForTesting
   /*package*/ Map<Integer, Movie> mCachedMovies;
@@ -44,7 +44,6 @@ public class MoviesRepository implements MoviesDataSource {
     INSTANCE = null;
   }
 
-  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override
   public void getMovies(@NonNull final LoadMoviesCallback callback) {
     checkNotNull(callback);
@@ -175,9 +174,7 @@ public class MoviesRepository implements MoviesDataSource {
 
   private void refreshLocalDataSource(List<Movie> movies) {
     mLocalDataSource.deleteAll();
-    for (Movie movie : movies) {
-      mLocalDataSource.save(movie);
-    }
+    movies.forEach(mLocalDataSource::save);
   }
 
   @Nullable

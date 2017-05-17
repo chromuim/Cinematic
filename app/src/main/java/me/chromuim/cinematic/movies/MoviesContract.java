@@ -30,5 +30,7 @@ public interface MoviesContract {
     void loadMovies(boolean forceUpdate);
 
     void openMovieDetails(@NonNull Movie requestedMovie);
+
+    void loadMore();
   }
 }

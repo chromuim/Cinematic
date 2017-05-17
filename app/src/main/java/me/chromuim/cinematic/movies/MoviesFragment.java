@@ -7,11 +7,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import java.util.ArrayList;
@@ -32,8 +35,8 @@ public class MoviesFragment extends Fragment implements MoviesContract.View, Mov
   @BindView(R.id.swipe_layout)
   SwipeRefreshLayout mSwipeRefreshLayout;
 
-  @BindView(R.id.no_movies_layout)
-  LinearLayout mNoMoviesLayout;
+  @BindView(R.id.no_movies_textView)
+  TextView mNoMoviesLayout;
 
   private MoviesContract.Presenter mPresenter;
 
@@ -53,14 +56,20 @@ public class MoviesFragment extends Fragment implements MoviesContract.View, Mov
     View view = inflater.inflate(R.layout.movies_grid, container, false);
     ButterKnife.bind(this, view);
 
-    mSwipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-      @Override
-      public void onRefresh() {
-        mPresenter.loadMovies(false);
-      }
-    });
+    mSwipeRefreshLayout.setOnRefreshListener(() -> mPresenter.loadMovies(false));
 
     setHasOptionsMenu(true);
+
+    GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, LinearLayoutManager.VERTICAL, false);
+    mRecyclerView.setLayoutManager(gridLayoutManager);
+    mRecyclerView.addOnScrollListener(new EndlessScrolling(gridLayoutManager) {
+      @Override
+      public void loadMore() {
+        mPresenter.loadMore();
+      }
+    });
+    mRecyclerView.setAdapter(mMoviesAdapter);
+
     return view;
 
   }
@@ -108,12 +117,7 @@ public class MoviesFragment extends Fragment implements MoviesContract.View, Mov
     if (getView() == null) {
       return;
     }
-    mSwipeRefreshLayout.post(new Runnable() {
-      @Override
-      public void run() {
-        mSwipeRefreshLayout.setRefreshing(active);
-      }
-    });
+    mSwipeRefreshLayout.post(() -> mSwipeRefreshLayout.setRefreshing(active));
   }
 
   @Override

@@ -41,7 +41,6 @@ public class MoviesActivity extends AppCompatActivity {
     setContentView(R.layout.main_activity);
     ButterKnife.bind(this);
 
-//    mToolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(mToolbar);
     setActionBar();
 
@@ -75,30 +74,28 @@ public class MoviesActivity extends AppCompatActivity {
   private void setActionBar() {
     if (getSupportActionBar() != null) {
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+      getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
     mToolbar.setNavigationIcon(R.drawable.ic_menu);
   }
 
   private void setNavigationViewContent(NavigationView nv) {
     nv.setNavigationItemSelectedListener(
-        new OnNavigationItemSelectedListener() {
-          @Override
-          public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-              // we are already in this case
-              case R.id.drawer_explore_action:
-                break;
+        item -> {
+          switch (item.getItemId()) {
+            // we are already in this case
+            case R.id.drawer_explore_action:
+              break;
 
-              case R.id.drawer_favourite_action:
-                //start favourite activity
-                break;
-              default:
-                break;
-            }
-            item.setChecked(true);
-            mDrawerLayout.closeDrawers();
-            return true;
+            case R.id.drawer_favourite_action:
+              //start favourite activity
+              break;
+            default:
+              break;
           }
+          item.setChecked(true);
+          mDrawerLayout.closeDrawers();
+          return true;
         });
   }
 }
