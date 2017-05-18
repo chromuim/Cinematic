@@ -31,6 +31,6 @@ public interface MoviesContract {
 
     void openMovieDetails(@NonNull Movie requestedMovie);
 
-    void loadMore();
+    void loadMore(int currentPage);
   }
 }

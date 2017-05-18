@@ -64,8 +64,8 @@ public class MoviesFragment extends Fragment implements MoviesContract.View, Mov
     mRecyclerView.setLayoutManager(gridLayoutManager);
     mRecyclerView.addOnScrollListener(new EndlessScrolling(gridLayoutManager) {
       @Override
-      public void loadMore() {
-        mPresenter.loadMore();
+      public void loadMore(int currentPage) {
+        mPresenter.loadMore(currentPage);
       }
     });
     mRecyclerView.setAdapter(mMoviesAdapter);

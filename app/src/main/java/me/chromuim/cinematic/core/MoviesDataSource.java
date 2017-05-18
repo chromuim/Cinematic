@@ -26,6 +26,8 @@ public interface MoviesDataSource {
 
   void getMovies(@NonNull LoadMoviesCallback callback);
 
+  void getMovies(int currentPage, @NonNull LoadMoviesCallback callback);
+
   void getMovie(int movieId, @NonNull LoadMovieCallback callback);
 
   void save(@NonNull Movie movie);

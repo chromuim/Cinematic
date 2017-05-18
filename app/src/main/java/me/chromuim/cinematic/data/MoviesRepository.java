@@ -55,7 +55,7 @@ public class MoviesRepository implements MoviesDataSource {
 
     if (mCacheIsDirty) {
       //fetch new data
-      loadFromRemote(callback);
+      loadFromRemote(1, callback);
     } else {
       mLocalDataSource.getMovies(new LoadMoviesCallback() {
         @Override
@@ -66,11 +66,16 @@ public class MoviesRepository implements MoviesDataSource {
 
         @Override
         public void onDataNotAvailable() {
-          loadFromRemote(callback);
+          loadFromRemote(1, callback);
         }
       });
     }
 
+  }
+
+  @Override
+  public void getMovies(int currentPage, @NonNull LoadMoviesCallback callback) {
+    loadFromRemote(currentPage, callback);
   }
 
   @Override
@@ -145,8 +150,8 @@ public class MoviesRepository implements MoviesDataSource {
     mCachedMovies.put(movie.getId(), movie);
   }
 
-  private void loadFromRemote(final LoadMoviesCallback callback) {
-    mRemoteDataSource.getMovies(new LoadMoviesCallback() {
+  private void loadFromRemote(int currentPage, final LoadMoviesCallback callback) {
+    mRemoteDataSource.getMovies(currentPage, new LoadMoviesCallback() {
       @Override
       public void onMoviesLoaded(List<Movie> movies) {
         refreshCache(movies);
@@ -165,7 +170,7 @@ public class MoviesRepository implements MoviesDataSource {
     if (mCachedMovies == null) {
       mCachedMovies = new LinkedHashMap<>();
     }
-    mCachedMovies.clear();
+//    mCachedMovies.clear();
     for (Movie movie : movies) {
       mCachedMovies.put(movie.getId(), movie);
     }

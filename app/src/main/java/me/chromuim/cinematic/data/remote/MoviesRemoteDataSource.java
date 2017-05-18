@@ -23,8 +23,6 @@ public class MoviesRemoteDataSource implements MoviesDataSource {
   @NonNull
   private final MovieApiService mClient;
 
-  private int pageNo = 1;
-
 
   private MoviesRemoteDataSource() {
     mClient = MoviesRetrofitClient.createService(MovieApiService.class);
@@ -37,28 +35,14 @@ public class MoviesRemoteDataSource implements MoviesDataSource {
     return INSTANCE;
   }
 
-
   @Override
   public void getMovies(@NonNull LoadMoviesCallback callback) {
-    loadMovies(Constants.SORT_POPULARITY, pageNo, callback);
+//    loadMovies(Constants.SORT_POPULARITY,, callback);
+  }
 
-    //@Todo change it
-    Call<ResponseList<Movie>> movies = mClient.loadMovies(Constants.SORT_POPULARITY, 1);
-    movies.enqueue(new Callback<ResponseList<Movie>>() {
-      @Override
-      public void onResponse(Call<ResponseList<Movie>> call, Response<ResponseList<Movie>> response) {
-        List<Movie> moviesList = response.body().getResults();
-        if (moviesList.isEmpty()) {
-          callback.onDataNotAvailable();
-        }
-        callback.onMoviesLoaded(moviesList);
-      }
-
-      @Override
-      public void onFailure(Call<ResponseList<Movie>> call, Throwable t) {
-        callback.onDataNotAvailable();
-      }
-    });
+  @Override
+  public void getMovies(int currentPage, @NonNull LoadMoviesCallback callback) {
+    loadMovies(Constants.SORT_POPULARITY, currentPage, callback);
   }
 
   @Override
@@ -82,6 +66,21 @@ public class MoviesRemoteDataSource implements MoviesDataSource {
   }
 
   private void loadMovies(@NonNull String sortType, int pageNo, @NonNull LoadMoviesCallback callback) {
+    Call<ResponseList<Movie>> movies = mClient.loadMovies(sortType, pageNo);
+    movies.enqueue(new Callback<ResponseList<Movie>>() {
+      @Override
+      public void onResponse(Call<ResponseList<Movie>> call, Response<ResponseList<Movie>> response) {
+        List<Movie> moviesList = response.body().getResults();
+        if (moviesList.isEmpty()) {
+          callback.onDataNotAvailable();
+        }
+        callback.onMoviesLoaded(moviesList);
+      }
 
+      @Override
+      public void onFailure(Call<ResponseList<Movie>> call, Throwable t) {
+        callback.onDataNotAvailable();
+      }
+    });
   }
 }

@@ -1,6 +1,7 @@
 package me.chromuim.cinematic.movies;
 
 import static junit.framework.Assert.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
@@ -64,7 +65,7 @@ public class MoviesPresenterTest {
 //    verify(mMoviesView).setLoadingIndicator(true);
 
     // and make sure the data are fetched from the repo/ server.
-    verify(mMoviesRepository).getMovies(mLoadMoviesCallbackArgumentCaptor.capture());
+    verify(mMoviesRepository).getMovies(anyInt(), mLoadMoviesCallbackArgumentCaptor.capture());
 
     mLoadMoviesCallbackArgumentCaptor.getValue().onMoviesLoaded(MOVIES);
 
@@ -86,7 +87,7 @@ public class MoviesPresenterTest {
     mMoviesPresenter.loadMovies(true);
 
     //and the repo couldn't load any data for some reason.
-    verify(mMoviesRepository).getMovies(mLoadMoviesCallbackArgumentCaptor.capture());
+    verify(mMoviesRepository).getMovies(anyInt(), mLoadMoviesCallbackArgumentCaptor.capture());
     mLoadMoviesCallbackArgumentCaptor.getValue().onDataNotAvailable();
 
     // then make sure the error message / view is shown

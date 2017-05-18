@@ -48,8 +48,22 @@ public class MoviesPresenter implements MoviesContract.Presenter {
   }
 
   @Override
-  public void loadMore() {
+  public void loadMore(int currentPage) {
+    mMoviesRepository.getMovies(currentPage, new LoadMoviesCallback() {
+      @Override
+      public void onMoviesLoaded(List<Movie> movies) {
+        if (movies.isEmpty()) {
+          mMoviesView.showNoMovies();
+        } else {
+          mMoviesView.showMovies(movies);
+        }
+      }
 
+      @Override
+      public void onDataNotAvailable() {
+        mMoviesView.showError();
+      }
+    });
   }
 
 
@@ -62,7 +76,7 @@ public class MoviesPresenter implements MoviesContract.Presenter {
       mMoviesRepository.refreshAll();
     }
 
-    mMoviesRepository.getMovies(new LoadMoviesCallback() {
+    mMoviesRepository.getMovies(1, new LoadMoviesCallback() {
       @Override
       public void onMoviesLoaded(List<Movie> movies) {
         if (showLoadingIndicator) {
@@ -74,6 +88,7 @@ public class MoviesPresenter implements MoviesContract.Presenter {
           }
         }
       }
+
       @Override
       public void onDataNotAvailable() {
         mMoviesView.showError();

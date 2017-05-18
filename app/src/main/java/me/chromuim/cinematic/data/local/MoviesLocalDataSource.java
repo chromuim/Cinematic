@@ -66,6 +66,11 @@ public class MoviesLocalDataSource implements MoviesDataSource {
   }
 
   @Override
+  public void getMovies(int currentPage, @NonNull LoadMoviesCallback callback) {
+
+  }
+
+  @Override
   public void getMovie(int movieId, @NonNull LoadMovieCallback callback) {
     SQLiteDatabase database = mDbHelper.getReadableDatabase();
 

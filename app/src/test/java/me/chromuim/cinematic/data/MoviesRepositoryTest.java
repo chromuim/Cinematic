@@ -2,6 +2,7 @@ package me.chromuim.cinematic.data;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -66,33 +67,33 @@ public class MoviesRepositoryTest {
   @Test
   public void getMovies_twoCallsToRepo() {
     //when Movies are requested
-    mMoviesRepository.getMovies(mLoadMoviesCallback);
+    mMoviesRepository.getMovies(1, mLoadMoviesCallback);
 
-    verify(mLocalDataSource).getMovies(mLoadMoviesCallbackArgumentCaptor.capture());
+    verify(mLocalDataSource).getMovies(anyInt(), mLoadMoviesCallbackArgumentCaptor.capture());
 
     // and there were no data available.
     mLoadMoviesCallbackArgumentCaptor.getValue().onDataNotAvailable();
 
     // Then fetch data from remote
-    verify(mRemoteDataSource).getMovies(mLoadMoviesCallbackArgumentCaptor.capture());
+    verify(mRemoteDataSource).getMovies(anyInt(), mLoadMoviesCallbackArgumentCaptor.capture());
 
     // load the data in cache
     mLoadMoviesCallbackArgumentCaptor.getValue().onMoviesLoaded(MOVIES);
 
     //second call to api
-    mMoviesRepository.getMovies(mLoadMoviesCallback);
+    mMoviesRepository.getMovies(anyInt(), mLoadMoviesCallback);
 
-    verify(mLocalDataSource).getMovies(any(LoadMoviesCallback.class));
+    verify(mLocalDataSource).getMovies(anyInt(), any(LoadMoviesCallback.class));
 
   }
 
   @Test
   public void getMovies_requestFromLocalRepo() {
     // when
-    mMoviesRepository.getMovies(mLoadMoviesCallback);
+    mMoviesRepository.getMovies(anyInt(), mLoadMoviesCallback);
 
     //then
-    verify(mLocalDataSource).getMovies(any(LoadMoviesCallback.class));
+    verify(mLocalDataSource).getMovies(anyInt(), any(LoadMoviesCallback.class));
   }
 
   @Test
@@ -146,14 +147,14 @@ public class MoviesRepositoryTest {
     mMoviesRepository.refreshAll();
 
     //then when getting new data it will load from remote.
-    mMoviesRepository.getMovies(mLoadMoviesCallback);
+    mMoviesRepository.getMovies(anyInt(), mLoadMoviesCallback);
 
-    verify(mRemoteDataSource).getMovies(mLoadMoviesCallbackArgumentCaptor.capture());
+    verify(mRemoteDataSource).getMovies(anyInt(), mLoadMoviesCallbackArgumentCaptor.capture());
 
     mLoadMoviesCallbackArgumentCaptor.getValue().onMoviesLoaded(MOVIES);
 
     // the local repo was never being called.
-    verify(mLocalDataSource, never()).getMovies(mLoadMoviesCallback);
+    verify(mLocalDataSource, never()).getMovies(anyInt(), mLoadMoviesCallback);
     verify(mLoadMoviesCallback).onMoviesLoaded(eq(MOVIES));
 
   }
@@ -163,10 +164,10 @@ public class MoviesRepositoryTest {
     //when force load/refresh
     mMoviesRepository.refreshAll();
     //and movies are requested
-    mMoviesRepository.getMovies(mLoadMoviesCallback);
+    mMoviesRepository.getMovies(anyInt(), mLoadMoviesCallback);
 
     //and remote going to get the data
-    verify(mRemoteDataSource).getMovies(mLoadMoviesCallbackArgumentCaptor.capture());
+    verify(mRemoteDataSource).getMovies(anyInt(), mLoadMoviesCallbackArgumentCaptor.capture());
     mLoadMoviesCallbackArgumentCaptor.getValue().onMoviesLoaded(MOVIES);
 
     //then the data must be saved in cache/local
@@ -178,14 +179,14 @@ public class MoviesRepositoryTest {
   @Test
   public void getMovies_localRepoNotAvailableSoGetDataFromRemote() {
     // when get movies are retrieved.
-    mMoviesRepository.getMovies(mLoadMoviesCallback);
+    mMoviesRepository.getMovies(anyInt(), mLoadMoviesCallback);
 
     // and local repo returned no values (for some reason)
-    verify(mLocalDataSource).getMovies(mLoadMoviesCallbackArgumentCaptor.capture());
+    verify(mLocalDataSource).getMovies(anyInt(), mLoadMoviesCallbackArgumentCaptor.capture());
     mLoadMoviesCallbackArgumentCaptor.getValue().onDataNotAvailable();
 
     // then the data will be fetched from remote repo
-    verify(mRemoteDataSource).getMovies(mLoadMoviesCallbackArgumentCaptor.capture());
+    verify(mRemoteDataSource).getMovies(anyInt(), mLoadMoviesCallbackArgumentCaptor.capture());
     mLoadMoviesCallbackArgumentCaptor.getValue().onMoviesLoaded(MOVIES);
 
     // the movies are returned from local Repo
@@ -195,14 +196,14 @@ public class MoviesRepositoryTest {
   @Test
   public void getMovies_bothReposNotAvailable() {
     // when data is requested
-    mMoviesRepository.getMovies(mLoadMoviesCallback);
+    mMoviesRepository.getMovies(anyInt(), mLoadMoviesCallback);
 
     // and local repo delivered nothing
-    verify(mLocalDataSource).getMovies(mLoadMoviesCallbackArgumentCaptor.capture());
+    verify(mLocalDataSource).getMovies(anyInt(), mLoadMoviesCallbackArgumentCaptor.capture());
     mLoadMoviesCallbackArgumentCaptor.getValue().onDataNotAvailable();
 
     // and remote repo being called , and also delivered nothing
-    verify(mRemoteDataSource).getMovies(mLoadMoviesCallbackArgumentCaptor.capture());
+    verify(mRemoteDataSource).getMovies(anyInt(), mLoadMoviesCallbackArgumentCaptor.capture());
     mLoadMoviesCallbackArgumentCaptor.getValue().onDataNotAvailable();
 
     // then make sure no data available being called
