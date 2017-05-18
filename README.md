@@ -44,4 +44,3 @@ This App is My Playground and still in progress.
 - Implement Content Providers for storing and retrieving Data.
 - Recycler View Custom Animations.
 - RxJava.
-
