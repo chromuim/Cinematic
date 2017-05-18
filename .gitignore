@@ -29,3 +29,4 @@ Thumbs.db
 build/
 #NDK
 #obj/
+/gradle.properties
