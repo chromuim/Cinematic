@@ -3,6 +3,7 @@ package me.chromuim.cinematic.movies;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 import java.util.List;
 import me.chromuim.cinematic.core.MoviesDataSource.LoadMoviesCallback;
 import me.chromuim.cinematic.data.Movie;
@@ -13,6 +14,8 @@ import me.chromuim.cinematic.data.MoviesRepository;
  */
 
 public class MoviesPresenter implements MoviesContract.Presenter {
+
+  private static final String TAG = "MoviesPresenter";
 
   private final MoviesRepository mMoviesRepository;
 
@@ -26,7 +29,6 @@ public class MoviesPresenter implements MoviesContract.Presenter {
 
     mMoviesView.setPresenter(this);
   }
-
 
   @Override
   public void start() {
@@ -45,6 +47,25 @@ public class MoviesPresenter implements MoviesContract.Presenter {
     mMoviesView.showMovieDetailsUi(requestedMovie.getId());
   }
 
+  @Override
+  public void loadMore(int currentPage) {
+    mMoviesRepository.getMovies(currentPage, new LoadMoviesCallback() {
+      @Override
+      public void onMoviesLoaded(List<Movie> movies) {
+        if (movies.isEmpty()) {
+          mMoviesView.showNoMovies();
+        } else {
+          mMoviesView.showMovies(movies);
+        }
+      }
+
+      @Override
+      public void onDataNotAvailable() {
+        mMoviesView.showError();
+      }
+    });
+  }
+
 
   private void loadMovies(boolean force, final boolean showLoadingIndicator) {
     if (showLoadingIndicator) {
@@ -55,12 +76,11 @@ public class MoviesPresenter implements MoviesContract.Presenter {
       mMoviesRepository.refreshAll();
     }
 
-    mMoviesRepository.getMovies(new LoadMoviesCallback() {
+    mMoviesRepository.getMovies(1, new LoadMoviesCallback() {
       @Override
       public void onMoviesLoaded(List<Movie> movies) {
         if (showLoadingIndicator) {
           mMoviesView.setLoadingIndicator(false);
-
           if (movies.isEmpty()) {
             mMoviesView.showNoMovies();
           } else {

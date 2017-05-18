@@ -22,7 +22,7 @@ public class MoviesRepository implements MoviesDataSource {
   private final MoviesDataSource mLocalDataSource;
 
   private final MoviesDataSource mRemoteDataSource;
-  boolean mCacheIsDirty = false;
+  private boolean mCacheIsDirty = false;
 
   @VisibleForTesting
   /*package*/ Map<Integer, Movie> mCachedMovies;
@@ -44,7 +44,6 @@ public class MoviesRepository implements MoviesDataSource {
     INSTANCE = null;
   }
 
-  @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override
   public void getMovies(@NonNull final LoadMoviesCallback callback) {
     checkNotNull(callback);
@@ -56,7 +55,7 @@ public class MoviesRepository implements MoviesDataSource {
 
     if (mCacheIsDirty) {
       //fetch new data
-      loadFromRemote(callback);
+      loadFromRemote(1, callback);
     } else {
       mLocalDataSource.getMovies(new LoadMoviesCallback() {
         @Override
@@ -67,11 +66,16 @@ public class MoviesRepository implements MoviesDataSource {
 
         @Override
         public void onDataNotAvailable() {
-          loadFromRemote(callback);
+          loadFromRemote(1, callback);
         }
       });
     }
 
+  }
+
+  @Override
+  public void getMovies(int currentPage, @NonNull LoadMoviesCallback callback) {
+    loadFromRemote(currentPage, callback);
   }
 
   @Override
@@ -146,8 +150,8 @@ public class MoviesRepository implements MoviesDataSource {
     mCachedMovies.put(movie.getId(), movie);
   }
 
-  private void loadFromRemote(final LoadMoviesCallback callback) {
-    mRemoteDataSource.getMovies(new LoadMoviesCallback() {
+  private void loadFromRemote(int currentPage, final LoadMoviesCallback callback) {
+    mRemoteDataSource.getMovies(currentPage, new LoadMoviesCallback() {
       @Override
       public void onMoviesLoaded(List<Movie> movies) {
         refreshCache(movies);
@@ -166,7 +170,7 @@ public class MoviesRepository implements MoviesDataSource {
     if (mCachedMovies == null) {
       mCachedMovies = new LinkedHashMap<>();
     }
-    mCachedMovies.clear();
+//    mCachedMovies.clear();
     for (Movie movie : movies) {
       mCachedMovies.put(movie.getId(), movie);
     }
@@ -175,9 +179,7 @@ public class MoviesRepository implements MoviesDataSource {
 
   private void refreshLocalDataSource(List<Movie> movies) {
     mLocalDataSource.deleteAll();
-    for (Movie movie : movies) {
-      mLocalDataSource.save(movie);
-    }
+    movies.forEach(mLocalDataSource::save);
   }
 
   @Nullable

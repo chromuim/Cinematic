@@ -32,6 +32,7 @@ ext {
     guaveVersion = '20.0'
     butterKnifeVersion = '8.5.1'
     PicassoVersion = '2.5.2'
+    RetrofitVersion = '2.3.0'
 
     //testing Util
     junitVersion = '4.12'

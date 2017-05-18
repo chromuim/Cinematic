@@ -28,6 +28,10 @@ android {
             useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        buildTypes.each {
+            it.buildConfigField('String', 'API_KEY', Key)
+        }
     }
 
     productFlavors {
@@ -64,6 +68,8 @@ dependencies {
     compile "com.jakewharton:butterknife:$rootProject.ext.butterKnifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterKnifeVersion"
     compile "com.squareup.picasso:picasso:$rootProject.ext.PicassoVersion"
+    compile "com.squareup.retrofit2:retrofit:$rootProject.ext.RetrofitVersion"
+    compile "com.squareup.retrofit2:converter-gson:$rootProject.ext.RetrofitVersion"
 
     // lib for local unit tests
     testCompile "junit:junit:$rootProject.ext.junitVersion"
