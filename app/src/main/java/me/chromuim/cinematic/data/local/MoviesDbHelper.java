@@ -11,7 +11,7 @@ import me.chromuim.cinematic.data.local.MoviesContract.MoviesEntry;
 
 public class MoviesDbHelper extends SQLiteOpenHelper {
 
-  private static final int DATABASE_VERSION = 1;
+  private static final int DATABASE_VERSION = 2;
   private static final String DATABASE_NAME = "movies.db";
 
   public MoviesDbHelper(Context context) {
@@ -21,7 +21,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
 
   @Override
   public void onCreate(SQLiteDatabase db) {
-    db.execSQL(MoviesEntry.CREATE_TALBE_QUERY);
+    db.execSQL(MoviesEntry.CREATE_TABLE_QUERY);
   }
 
   @Override

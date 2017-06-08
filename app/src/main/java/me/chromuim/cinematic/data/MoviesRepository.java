@@ -179,7 +179,10 @@ public class MoviesRepository implements MoviesDataSource {
 
   private void refreshLocalDataSource(List<Movie> movies) {
     mLocalDataSource.deleteAll();
-    movies.forEach(mLocalDataSource::save);
+
+     for (Movie movie : movies) {
+      mLocalDataSource.save(movie);
+    }
   }
 
   @Nullable

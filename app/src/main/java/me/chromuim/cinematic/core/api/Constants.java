@@ -9,13 +9,13 @@ public final class Constants {
   public static final String BASE_URL = "http://api.themoviedb.org/3/";
   public final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
   public final static String IMAGE_SIZE = "w500";
+  public final static String IMAGE_SIZE_DETAIL_TOOLBAR = "w780";
 
 
   public static final String API_KEY_PARAM = "api_key";
   public static final String SORT_POPULARITY = "popularity.desc";
   public static final String SORT_RATING = "vote_average.desc";
   public static final String SORT_FAVOURITE = "favourites";
-
 
 
 }

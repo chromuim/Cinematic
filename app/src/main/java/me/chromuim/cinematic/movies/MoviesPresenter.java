@@ -3,7 +3,6 @@ package me.chromuim.cinematic.movies;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 import java.util.List;
 import me.chromuim.cinematic.core.MoviesDataSource.LoadMoviesCallback;
 import me.chromuim.cinematic.data.Movie;
@@ -44,7 +43,7 @@ public class MoviesPresenter implements MoviesContract.Presenter {
   @Override
   public void openMovieDetails(@NonNull Movie requestedMovie) {
     checkNotNull(requestedMovie, "Requested Movies can't be null");
-    mMoviesView.showMovieDetailsUi(requestedMovie.getId());
+    mMoviesView.showMovieDetailsUi(requestedMovie);
   }
 
   @Override
@@ -65,7 +64,6 @@ public class MoviesPresenter implements MoviesContract.Presenter {
       }
     });
   }
-
 
   private void loadMovies(boolean force, final boolean showLoadingIndicator) {
     if (showLoadingIndicator) {

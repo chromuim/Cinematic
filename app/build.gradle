@@ -21,6 +21,7 @@ android {
         debug {
             minifyEnabled false
             useProguard false
+            debuggable true
         }
 
         release {

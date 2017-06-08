@@ -1,6 +1,6 @@
 package me.chromuim.cinematic.movies;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.inOrder;
@@ -8,12 +8,9 @@ import static org.mockito.Mockito.verify;
 
 import com.google.common.collect.Lists;
 import java.util.List;
-import junit.framework.Assert;
 import me.chromuim.cinematic.core.MoviesDataSource.LoadMoviesCallback;
 import me.chromuim.cinematic.data.Movie;
 import me.chromuim.cinematic.data.MoviesRepository;
-import net.bytebuddy.asm.Advice.Argument;
-import net.bytebuddy.dynamic.scaffold.TypeWriter.MethodPool.Record.ForDefinedMethod.OfVisibilityBridge;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -103,7 +100,7 @@ public class MoviesPresenterTest {
     mMoviesPresenter.openMovieDetails(movie);
 
     //the viewer should show the details
-    verify(mMoviesView).showMovieDetailsUi(movie.getId());
+    verify(mMoviesView).showMovieDetailsUi(movie);
   }
 
 

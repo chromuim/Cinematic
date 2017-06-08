@@ -76,25 +76,24 @@ public class MoviesAdapter extends RecyclerView.Adapter<MovieHolder> {
     @BindView(R.id.movie_grid_item)
     ImageView mImageView;
 
-
     public MovieHolder(View itemView) {
       super(itemView);
       ButterKnife.bind(this, itemView);
       itemView.setOnClickListener(this);
     }
 
-
     @Override
     public void onClick(View v) {
       int index = getAdapterPosition();
-      mClickListener.onItemClick(index);
+      Movie movie = mMovieList.get(index);
+      mClickListener.onItemClick(movie);
     }
   }
 
 
   public interface onMovieItemClickListener {
 
-    void onItemClick(int movieIndex);
+    void onItemClick(@NonNull Movie movie);
   }
 
 }

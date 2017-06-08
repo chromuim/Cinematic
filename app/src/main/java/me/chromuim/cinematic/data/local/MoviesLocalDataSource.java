@@ -46,10 +46,11 @@ public class MoviesLocalDataSource implements MoviesDataSource {
         String title = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_TITLE));
         String overview = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_OVERVIEW));
         String posterPath = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_POSTER_PATH));
+        String backDropPath = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_BACKDROP_PATH));
         float average = cursor.getFloat(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_AVERAGE));
         String releaseDate = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_RELEASE_DATE));
 
-        Movie movie = new Movie(movieId, title, overview, posterPath, average, releaseDate);
+        Movie movie = new Movie(movieId, title, overview, posterPath, backDropPath, average, releaseDate);
         movieList.add(movie);
       }
     }
@@ -84,10 +85,11 @@ public class MoviesLocalDataSource implements MoviesDataSource {
       String title = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_TITLE));
       String overview = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_OVERVIEW));
       String posterPath = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_POSTER_PATH));
+      String backDropPath = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_BACKDROP_PATH));
       float average = cursor.getFloat(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_AVERAGE));
       String releaseDate = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_RELEASE_DATE));
 
-      movie = new Movie(id, title, overview, posterPath, average, releaseDate);
+      movie = new Movie(id, title, overview, posterPath, backDropPath, average, releaseDate);
     }
 
     if (cursor != null) {
@@ -112,6 +114,7 @@ public class MoviesLocalDataSource implements MoviesDataSource {
     values.put(MoviesEntry.COLUMN_MOVIE_TITLE, movie.getTitle());
     values.put(MoviesEntry.COLUMN_MOVIE_OVERVIEW, movie.getOverview());
     values.put(MoviesEntry.COLUMN_MOVIE_POSTER_PATH, movie.getPosterPath());
+    values.put(MoviesEntry.COLUMN_MOVIE_BACKDROP_PATH, movie.getBackdropPath());
     values.put(MoviesEntry.COLUMN_MOVIE_AVERAGE, movie.getAverage());
     values.put(MoviesEntry.COLUMN_MOVIE_RELEASE_DATE, movie.getReleaseDate());
 

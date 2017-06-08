@@ -3,4 +3,5 @@
   <string name="drawer_explore_title">Explore</string>
   <string name="drawer_favourites_title">Favourites</string>
   <string name="gridview_no_movies">No Movies Found</string>
+  <string name="movie_background_image_toolbar">Movie Background Image</string>
 </resources>

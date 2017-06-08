@@ -16,7 +16,7 @@ public interface MoviesContract {
 
     void showMovies(List<Movie> movies);
 
-    void showMovieDetailsUi(int movieId);
+    void showMovieDetailsUi(Movie movie);
 
     void showNoMovies();
 
