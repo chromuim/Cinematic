@@ -45,4 +45,4 @@ This App is My Playground and still in progress.
 - Recycler View Custom Animations.
 - RxJava.
 
-[![Analytics](https://ga-beacon.appspot.com/UA-100695310-1/chromuim/readme?pixel)](https://github.com/igrigorik/ga-beacon)
+[![Analytics](https://ga-beacon.appspot.com/UA-100695310-1/chromuim/cinematic/readme?pixel)](https://github.com/igrigorik/ga-beacon)
