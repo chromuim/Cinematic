@@ -44,3 +44,5 @@ This App is My Playground and still in progress.
 - Implement Content Providers for storing and retrieving Data.
 - Recycler View Custom Animations.
 - RxJava.
+
+[![Analytics](https://ga-beacon.appspot.com/UA-100695310-1/chromuim/cinematic/readme?pixel)](https://github.com/igrigorik/ga-beacon)
