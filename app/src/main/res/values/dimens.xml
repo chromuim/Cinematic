@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <dimen name="margin_small_4dp">4dp</dimen>
-  <dimen name="margin_medium_8dp">8dp</dimen>
-  <dimen name="margin_large_12dp">12dp</dimen>
-  <dimen name="margin_xlarge_16dp">16dp</dimen>
+  <dimen name="small_4dp">4dp</dimen>
+  <dimen name="medium_8dp">8dp</dimen>
+  <dimen name="large_12dp">12dp</dimen>
+  <dimen name="xlarge_16dp">16dp</dimen>
 
 </resources>

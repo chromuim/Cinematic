@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+
+
+  <android.support.v7.widget.CardView
+    android:id="@+id/movie_detail_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/medium_8dp"
+    android:layout_marginBottom="@dimen/small_4dp"
+    android:layout_centerHorizontal="true">
+
+    <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <ImageView
+        android:id="@+id/movie_detail_poster_image"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/movie_poster"
+        tools:src="@mipmap/ic_launcher"/>
+
+      <TextView
+        android:id="@+id/movie_detail_title_text_view"
+        style="@style/TextAppearance.AppCompat.Headline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/movie_detail_poster_image"
+        android:layout_toEndOf="@id/movie_detail_poster_image"
+        android:layout_toRightOf="@id/movie_detail_poster_image"
+        android:paddingTop="@dimen/xlarge_16dp"
+        android:paddingStart="@dimen/medium_8dp"
+        android:paddingEnd="@dimen/medium_8dp"
+        android:paddingLeft="@dimen/medium_8dp"
+        android:paddingRight="@dimen/medium_8dp"
+        android:ellipsize="end"
+        android:maxLines="3"
+        tools:text="[Movie Title]"/>
+
+      <TextView
+        android:id="@+id/movie_detail_rating_text_view"
+        style="@style/TextAppearance.AppCompat.Display2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/medium_8dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/movie_detail_poster_image"
+        android:layout_toRightOf="@id/movie_detail_poster_image"
+        android:gravity="center"
+        tools:text="[10]"/>
+
+      <TextView
+        android:id="@+id/movie_detail_release_date_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/medium_8dp"
+        android:layout_alignBottom="@id/movie_detail_poster_image"
+        android:layout_toEndOf="@id/movie_detail_poster_image"
+        android:layout_toRightOf="@id/movie_detail_poster_image"
+        android:padding="@dimen/medium_8dp"
+        tools:text="[release date : 01.01.2200]"/>
+
+    </RelativeLayout>
+
+  </android.support.v7.widget.CardView>
+
+  <android.support.v7.widget.CardView
+    android:id="@+id/movie_detail_overview_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/small_4dp"
+    android:layout_marginBottom="@dimen/small_4dp"
+    android:layout_below="@id/movie_detail_card_view"
+    android:layout_centerHorizontal="true">
+
+    <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="@dimen/medium_8dp">
+
+      <TextView
+        android:id="@+id/overview_title"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/movie_detail_card_overview_title"/>
+
+      <TextView
+        android:id="@+id/movie_detail_overview_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/overview_title"
+        android:paddingTop="@dimen/medium_8dp"
+        tools:text="[Some Review...............]"/>
+    </RelativeLayout>
+
+  </android.support.v7.widget.CardView>
+
+
+</RelativeLayout>

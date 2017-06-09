@@ -30,7 +30,7 @@ public final class MoviesContract {
             " %4$S TEXT NOT NULL,  " +
             " %5$S TEXT NOT NULL, " +
             " %6$S TEXT NOT NULL, " +
-            " %7$S TEXT NOT NULL, " +
+            " %7$S TEXT , " +
             " %8$S TEXT NOT NULL, " +
             " %9$S LONG NOT NULL ); "
         , TABLE_NAME

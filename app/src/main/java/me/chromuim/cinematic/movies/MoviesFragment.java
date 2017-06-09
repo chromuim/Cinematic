@@ -123,7 +123,9 @@ public class MoviesFragment extends Fragment implements MoviesContract.View, Mov
 
   @Override
   public void showError() {
-    Snackbar.make(getView(), "Error is Happened", Snackbar.LENGTH_LONG).show();
+    if (getView() != null) {
+      Snackbar.make(getView(), "Error is Happened", Snackbar.LENGTH_LONG).show();
+    }
   }
 
   @Override

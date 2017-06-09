@@ -11,7 +11,7 @@ import me.chromuim.cinematic.data.local.MoviesContract.MoviesEntry;
 
 public class MoviesDbHelper extends SQLiteOpenHelper {
 
-  private static final int DATABASE_VERSION = 2;
+  private static final int DATABASE_VERSION = 3;
   private static final String DATABASE_NAME = "movies.db";
 
   public MoviesDbHelper(Context context) {
