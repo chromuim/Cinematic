@@ -5,6 +5,8 @@ import java.util.List;
 import me.chromuim.cinematic.core.MoviesDataSource;
 import me.chromuim.cinematic.core.api.Constants;
 import me.chromuim.cinematic.core.api.MovieApiService;
+import me.chromuim.cinematic.core.api.MovieVideo;
+import me.chromuim.cinematic.core.api.MovieVideosResponse;
 import me.chromuim.cinematic.core.api.MoviesRetrofitClient;
 import me.chromuim.cinematic.core.api.ResponseList;
 import me.chromuim.cinematic.data.Movie;
@@ -48,6 +50,27 @@ public class MoviesRemoteDataSource implements MoviesDataSource {
   @Override
   public void getMovie(int movieId, @NonNull LoadMovieCallback callback) {
 
+  }
+
+  @Override
+  public void getMovieVideos(int movieId, @NonNull LoadMovieVideosCallback callback) {
+    Call<MovieVideosResponse> movieVideosResponseCall = mClient.laodMovieDetailVideos(movieId);
+    movieVideosResponseCall.enqueue(new Callback<MovieVideosResponse>() {
+      @Override
+      public void onResponse(Call<MovieVideosResponse> call, Response<MovieVideosResponse> response) {
+        List<MovieVideo> movieVideos = response.body().getResults();
+        if (movieVideos.isEmpty()) {
+          callback.onDataNotAvailable();
+        } else {
+          callback.onVideosLoaded(movieVideos);
+        }
+      }
+
+      @Override
+      public void onFailure(Call<MovieVideosResponse> call, Throwable t) {
+        callback.onDataNotAvailable();
+      }
+    });
   }
 
   @Override

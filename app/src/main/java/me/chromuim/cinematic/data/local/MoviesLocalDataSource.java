@@ -105,6 +105,11 @@ public class MoviesLocalDataSource implements MoviesDataSource {
   }
 
   @Override
+  public void getMovieVideos(int movieId, @NonNull LoadMovieVideosCallback callback) {
+    // empty for now , since i'm not saving videos in Db
+  }
+
+  @Override
   public void save(@NonNull Movie movie) {
     checkNotNull(movie);
     SQLiteDatabase database = mDbHelper.getWritableDatabase();

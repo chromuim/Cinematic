@@ -7,4 +7,7 @@
   <string name="movie_poster">Movie Poster</string>
   <string name="movie_detail_release_date">Release date: %s</string>
   <string name="movie_detail_card_overview_title">Overview</string>
+  <string name="movie_detail_card_videos_title">Videos</string>
+  <string name="movie_detail_video_thumbnail">Video Thumbnail</string>
+  <string name="movie_detail_play_video">Play Video</string>
 </resources>

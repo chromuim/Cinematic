@@ -4,10 +4,13 @@ import static com.google.gson.internal.$Gson$Preconditions.checkNotNull;
 
 import android.support.annotation.NonNull;
 import com.google.common.base.Strings;
+import java.util.List;
 import java.util.Locale;
 import me.chromuim.cinematic.core.MoviesDataSource.LoadMovieCallback;
+import me.chromuim.cinematic.core.MoviesDataSource.LoadMovieVideosCallback;
 import me.chromuim.cinematic.core.Utils;
 import me.chromuim.cinematic.core.api.Constants;
+import me.chromuim.cinematic.core.api.MovieVideo;
 import me.chromuim.cinematic.data.Movie;
 import me.chromuim.cinematic.data.MoviesRepository;
 
@@ -84,5 +87,18 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter {
 
   }
 
+  @Override
+  public void loadMovieVideos() {
+    mRepository.getMovieVideos(mMovieId, new LoadMovieVideosCallback() {
+      @Override
+      public void onVideosLoaded(List<MovieVideo> movieVideos) {
+        mDetailView.showVideos(movieVideos);
+      }
 
+      @Override
+      public void onDataNotAvailable() {
+        mDetailView.hideVideos();
+      }
+    });
+  }
 }

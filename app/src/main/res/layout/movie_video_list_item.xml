@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:paddingLeft="@dimen/small_4dp"
+  android:paddingRight="@dimen/small_4dp">
+
+  <ImageView
+    android:id="@+id/movie_detail_video_thumbnail"
+    android:layout_width="200dp"
+    android:layout_height="120dp"
+    android:background="@android:color/black"
+    android:contentDescription="@string/movie_detail_video_thumbnail"/>
+
+  <ImageView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:contentDescription="@string/movie_detail_play_video"
+    android:src="@drawable/ic_play_circle_filled_40dp"/>
+
+</RelativeLayout>

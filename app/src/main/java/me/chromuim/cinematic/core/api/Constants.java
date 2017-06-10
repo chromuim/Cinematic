@@ -11,6 +11,8 @@ public final class Constants {
   public final static String IMAGE_SIZE = "w500";
   public final static String IMAGE_SIZE_DETAIL_TOOLBAR = "w780";
 
+  public final static String YOUTUBE_THUMBNAIL = "https://img.youtube.com/vi/%s/mqdefault.jpg";
+
 
   public static final String API_KEY_PARAM = "api_key";
   public static final String SORT_POPULARITY = "popularity.desc";

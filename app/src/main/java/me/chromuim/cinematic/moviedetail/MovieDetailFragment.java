@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +14,10 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
+import java.util.ArrayList;
+import java.util.List;
 import me.chromuim.cinematic.R;
+import me.chromuim.cinematic.core.api.MovieVideo;
 import me.chromuim.cinematic.moviedetail.MovieDetailContract.Presenter;
 
 /**
@@ -23,6 +28,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
 
   private static final String EXTRA_MOVIE_ID = "extra_movie_id_fragment";
 
+  //region Movie Detail Info
   @BindView(R.id.movie_detail_card_view)
   CardView mMovieDetail;
 
@@ -37,13 +43,24 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
 
   @BindView(R.id.movie_detail_release_date_text_view)
   TextView mMovieDetailReleaseDate;
+  //endregion
 
+  //region Movie Detail Overview
   @BindView(R.id.movie_detail_overview_card_view)
   CardView mMovieOverviewCard;
 
   @BindView(R.id.movie_detail_overview_text)
   TextView mMovieOverviewText;
+  //endregion
 
+  @BindView(R.id.movie_detail_videos_card_view)
+  CardView mMovieVideosCard;
+
+  @BindView(R.id.movie_detail_videos_recycler_view)
+  RecyclerView mMovieVideosRecyclerView;
+
+
+  MovieVideosAdapter mMovieVideosAdapter;
 
   MovieDetailContract.Presenter mPresenter;
 
@@ -64,13 +81,23 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
     View rootView = inflater.inflate(R.layout.movie_detail_fragment, container, false);
     ButterKnife.bind(this, rootView);
 
+    mMovieVideosRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+    mMovieVideosRecyclerView.setAdapter(mMovieVideosAdapter);
+
     return rootView;
+  }
+
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    mMovieVideosAdapter = new MovieVideosAdapter(getContext(), new ArrayList<>(0));
   }
 
   @Override
   public void onResume() {
     super.onResume();
     mPresenter.start();
+    mPresenter.loadMovieVideos();
   }
 
   // Contract Methods.
@@ -107,6 +134,18 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
   @Override
   public void showOverview(String overview) {
     mMovieOverviewText.setText(overview);
+  }
+
+  @Override
+  public void showVideos(List<MovieVideo> movieVideos) {
+    mMovieVideosAdapter.swap(movieVideos);
+
+    mMovieVideosCard.setVisibility(View.VISIBLE);
+  }
+
+  @Override
+  public void hideVideos() {
+    mMovieVideosCard.setVisibility(View.GONE);
   }
 
   @Override
