@@ -2,6 +2,9 @@
 This is an Improved version of the Popular Movies App, that's required to do in the Udacity 
 Associate Android Developer course.
 
+**Screens:**
+[screens](https://github.com/chromuim/Cinematic/blog/master/screens.gif)
+
 ## Implementing The App:
 This App uses :
 - [Product Flavours](https://developer.android.com/studio/build/build-variants.html) to replace modules at compile time , providing fake data and stubs for automated testing.
