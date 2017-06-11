@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import me.chromuim.cinematic.core.MoviesDataSource;
+import me.chromuim.cinematic.core.api.MovieReview;
 import me.chromuim.cinematic.core.api.MovieVideo;
 
 /**
@@ -133,6 +134,25 @@ public class MoviesRepository implements MoviesDataSource {
           callback.onDataNotAvailable();
         } else {
           callback.onVideosLoaded(movieVideos);
+        }
+      }
+
+      @Override
+      public void onDataNotAvailable() {
+        callback.onDataNotAvailable();
+      }
+    });
+  }
+
+  @Override
+  public void getMovieReviews(int movieId, @NonNull LoadMovieReviewsCallback callback) {
+    mRemoteDataSource.getMovieReviews(movieId, new LoadMovieReviewsCallback() {
+      @Override
+      public void onReviewLoaded(List<MovieReview> movieReviews) {
+        if (movieReviews == null || movieReviews.isEmpty()) {
+          callback.onDataNotAvailable();
+        } else {
+          callback.onReviewLoaded(movieReviews);
         }
       }
 

@@ -3,6 +3,7 @@ package me.chromuim.cinematic.moviedetail;
 import java.util.List;
 import me.chromuim.cinematic.core.BasePresenter;
 import me.chromuim.cinematic.core.BaseView;
+import me.chromuim.cinematic.core.api.MovieReview;
 import me.chromuim.cinematic.core.api.MovieVideo;
 
 /**
@@ -32,10 +33,24 @@ public interface MovieDetailContract {
     void showVideos(List<MovieVideo> movieVideos);
 
     void hideVideos();
+
+    void showYoutube(String url);
+
+    void showReviews(List<MovieReview> movieReviews);
+
+    void hideReviews();
+
+    void openReview(String url);
   }
 
   interface Presenter extends BasePresenter {
 
     void loadMovieVideos();
+
+    void loadMovieReviews();
+
+    void openYoutube(String url);
+
+    void openReview(String url);
   }
 }

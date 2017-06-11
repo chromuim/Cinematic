@@ -12,6 +12,8 @@ public final class Constants {
   public final static String IMAGE_SIZE_DETAIL_TOOLBAR = "w780";
 
   public final static String YOUTUBE_THUMBNAIL = "https://img.youtube.com/vi/%s/mqdefault.jpg";
+  public final static String YOUTUBE = "YouTube";
+  public final static String YOUTUBE_WATCH_URL = "http://www.youtube.com/watch?v=%s";
 
 
   public static final String API_KEY_PARAM = "api_key";

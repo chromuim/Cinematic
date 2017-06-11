@@ -16,6 +16,9 @@ public interface MovieApiService {
   Call<ResponseList<Movie>> loadMovies(@Query("sort_by") String sortBy, @Query("page") int page);
 
   @GET("movie/{id}/videos")
-  Call<MovieVideosResponse> laodMovieDetailVideos(@Path("id") int movieId);
+  Call<MovieVideosResponse> loadMovieDetailVideos(@Path("id") int movieId);
+
+  @GET("movie/{id}/reviews")
+  Call<MovieReviewResponse> loadMovieDetailReviews(@Path("id") int movieId);
 
 }

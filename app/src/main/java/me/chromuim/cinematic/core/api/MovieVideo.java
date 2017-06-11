@@ -10,23 +10,43 @@ import com.google.gson.annotations.SerializedName;
 
 public class MovieVideo implements Parcelable {
 
+  public static final Creator<MovieVideo> CREATOR = new Creator<MovieVideo>() {
+    @Override
+    public MovieVideo createFromParcel(Parcel source) {
+      return new MovieVideo(source);
+    }
+
+    @Override
+    public MovieVideo[] newArray(int size) {
+      return new MovieVideo[size];
+    }
+  };
+
   @SerializedName("id")
   private String mVideoId;
-
   @SerializedName("key")
   private String mKey;
-
   @SerializedName("name")
   private String mVideoName;
-
   @SerializedName("type")
   private String mType;
+  @SerializedName("site")
+  private String mSite;
 
-  public MovieVideo(String videoId, String key, String videoName, String type) {
+  public MovieVideo(String videoId, String key, String videoName, String type, String site) {
     mVideoId = videoId;
     mKey = key;
     mVideoName = videoName;
     mType = type;
+    mSite = site;
+  }
+
+  protected MovieVideo(Parcel in) {
+    this.mVideoId = in.readString();
+    this.mKey = in.readString();
+    this.mVideoName = in.readString();
+    this.mType = in.readString();
+    this.mSite = in.readString();
   }
 
   public String getType() {
@@ -45,6 +65,10 @@ public class MovieVideo implements Parcelable {
     return mVideoName;
   }
 
+  public boolean isYoutube() {
+    return mSite.toLowerCase().equals(Constants.YOUTUBE.toLowerCase());
+  }
+
   @Override
   public int describeContents() {
     return 0;
@@ -58,22 +82,7 @@ public class MovieVideo implements Parcelable {
     dest.writeString(this.mType);
   }
 
-  protected MovieVideo(Parcel in) {
-    this.mVideoId = in.readString();
-    this.mKey = in.readString();
-    this.mVideoName = in.readString();
-    this.mType = in.readString();
+  public String getSite() {
+    return mSite;
   }
-
-  public static final Creator<MovieVideo> CREATOR = new Creator<MovieVideo>() {
-    @Override
-    public MovieVideo createFromParcel(Parcel source) {
-      return new MovieVideo(source);
-    }
-
-    @Override
-    public MovieVideo[] newArray(int size) {
-      return new MovieVideo[size];
-    }
-  };
 }

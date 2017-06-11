@@ -7,9 +7,11 @@ import com.google.common.base.Strings;
 import java.util.List;
 import java.util.Locale;
 import me.chromuim.cinematic.core.MoviesDataSource.LoadMovieCallback;
+import me.chromuim.cinematic.core.MoviesDataSource.LoadMovieReviewsCallback;
 import me.chromuim.cinematic.core.MoviesDataSource.LoadMovieVideosCallback;
 import me.chromuim.cinematic.core.Utils;
 import me.chromuim.cinematic.core.api.Constants;
+import me.chromuim.cinematic.core.api.MovieReview;
 import me.chromuim.cinematic.core.api.MovieVideo;
 import me.chromuim.cinematic.data.Movie;
 import me.chromuim.cinematic.data.MoviesRepository;
@@ -100,5 +102,30 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter {
         mDetailView.hideVideos();
       }
     });
+  }
+
+  @Override
+  public void loadMovieReviews() {
+    mRepository.getMovieReviews(mMovieId, new LoadMovieReviewsCallback() {
+      @Override
+      public void onReviewLoaded(List<MovieReview> movieReviews) {
+        mDetailView.showReviews(movieReviews);
+      }
+
+      @Override
+      public void onDataNotAvailable() {
+        mDetailView.hideReviews();
+      }
+    });
+  }
+
+  @Override
+  public void openYoutube(String url) {
+    mDetailView.showYoutube(url);
+  }
+
+  @Override
+  public void openReview(String url) {
+    mDetailView.openReview(url);
   }
 }
