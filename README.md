@@ -3,7 +3,7 @@ This is an Improved version of the Popular Movies App, that's required to do in 
 Associate Android Developer course.
 
 **Screens:**
-[screens](https://github.com/chromuim/Cinematic/blog/master/screens.gif)
+![screens](screens.gif)
 
 ## Implementing The App:
 This App uses :
