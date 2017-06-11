@@ -4,7 +4,7 @@ Associate Android Developer course.
 
 **Screens:**
 
-<img src="screens.gif" alt="Screens" style="width: 80%;"/>
+<img src="screens.gif" alt="Screens"/>
 
 ## Implementing The App:
 This App uses :
