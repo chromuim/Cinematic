@@ -95,6 +95,10 @@ public class MovieDetailActivity extends AppCompatActivity {
     setTitle("");
     String fullPath = Constants.IMAGE_BASE_URL + Constants.IMAGE_SIZE_DETAIL_TOOLBAR + mMovie.getBackdropPath();
     Picasso.with(this).load(fullPath).into(mMovieThumbnail);
+  }
+
+  //@Todo
+  private void updateFabStatus() {
 
   }
 }

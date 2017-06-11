@@ -4,4 +4,11 @@
   <string name="drawer_favourites_title">Favourites</string>
   <string name="gridview_no_movies">No Movies Found</string>
   <string name="movie_background_image_toolbar">Movie Background Image</string>
+  <string name="movie_poster">Movie Poster</string>
+  <string name="movie_detail_release_date">Release date: %s</string>
+  <string name="movie_detail_card_overview_title">Overview</string>
+  <string name="movie_detail_card_videos_title">Videos</string>
+  <string name="movie_detail_video_thumbnail">Video Thumbnail</string>
+  <string name="movie_detail_play_video">Play Video</string>
+  <string name="movie_detail_reviews_title">Reviews</string>
 </resources>

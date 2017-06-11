@@ -10,6 +10,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import me.chromuim.cinematic.core.MoviesDataSource;
+import me.chromuim.cinematic.core.api.MovieReview;
+import me.chromuim.cinematic.core.api.MovieVideo;
 
 /**
  * Created by chromuim on 14.05.17.
@@ -123,6 +125,45 @@ public class MoviesRepository implements MoviesDataSource {
   }
 
   @Override
+  public void getMovieVideos(int movieId, @NonNull LoadMovieVideosCallback callback) {
+    //get the data from remote for now
+    mRemoteDataSource.getMovieVideos(movieId, new LoadMovieVideosCallback() {
+      @Override
+      public void onVideosLoaded(List<MovieVideo> movieVideos) {
+        if (movieVideos == null) {
+          callback.onDataNotAvailable();
+        } else {
+          callback.onVideosLoaded(movieVideos);
+        }
+      }
+
+      @Override
+      public void onDataNotAvailable() {
+        callback.onDataNotAvailable();
+      }
+    });
+  }
+
+  @Override
+  public void getMovieReviews(int movieId, @NonNull LoadMovieReviewsCallback callback) {
+    mRemoteDataSource.getMovieReviews(movieId, new LoadMovieReviewsCallback() {
+      @Override
+      public void onReviewLoaded(List<MovieReview> movieReviews) {
+        if (movieReviews == null || movieReviews.isEmpty()) {
+          callback.onDataNotAvailable();
+        } else {
+          callback.onReviewLoaded(movieReviews);
+        }
+      }
+
+      @Override
+      public void onDataNotAvailable() {
+        callback.onDataNotAvailable();
+      }
+    });
+  }
+
+  @Override
   public void deleteAll() {
     mLocalDataSource.deleteAll();
     mRemoteDataSource.deleteAll();
@@ -180,7 +221,7 @@ public class MoviesRepository implements MoviesDataSource {
   private void refreshLocalDataSource(List<Movie> movies) {
     mLocalDataSource.deleteAll();
 
-     for (Movie movie : movies) {
+    for (Movie movie : movies) {
       mLocalDataSource.save(movie);
     }
   }

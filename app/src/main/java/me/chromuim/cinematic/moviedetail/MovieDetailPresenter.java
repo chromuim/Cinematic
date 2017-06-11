@@ -3,7 +3,16 @@ package me.chromuim.cinematic.moviedetail;
 import static com.google.gson.internal.$Gson$Preconditions.checkNotNull;
 
 import android.support.annotation.NonNull;
+import com.google.common.base.Strings;
+import java.util.List;
+import java.util.Locale;
 import me.chromuim.cinematic.core.MoviesDataSource.LoadMovieCallback;
+import me.chromuim.cinematic.core.MoviesDataSource.LoadMovieReviewsCallback;
+import me.chromuim.cinematic.core.MoviesDataSource.LoadMovieVideosCallback;
+import me.chromuim.cinematic.core.Utils;
+import me.chromuim.cinematic.core.api.Constants;
+import me.chromuim.cinematic.core.api.MovieReview;
+import me.chromuim.cinematic.core.api.MovieVideo;
 import me.chromuim.cinematic.data.Movie;
 import me.chromuim.cinematic.data.MoviesRepository;
 
@@ -55,8 +64,68 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter {
   }
 
   private void showMovie(Movie movie) {
+    String posterPath = Constants.IMAGE_BASE_URL + Constants.IMAGE_SIZE + movie.getPosterPath();
+    mDetailView.showPoster(posterPath);
+
+    String movieTitle = movie.getTitle();
+    if (Strings.isNullOrEmpty(movieTitle)) {
+      mDetailView.hideTitle();
+    } else {
+      mDetailView.showTitle(movieTitle);
+    }
+
+    String avg = String.format(Locale.ENGLISH, "%.1f", movie.getAverage());
+    mDetailView.showAverage(avg);
+
+    String releaseDate = Utils.formatString(movie.getReleaseDate());
+    mDetailView.showReleaseDate(releaseDate);
+
+    String overview = movie.getOverview();
+    if (Strings.isNullOrEmpty(overview)) {
+      mDetailView.hideOverviewCard();
+    } else {
+      mDetailView.showOverview(overview);
+    }
 
   }
 
+  @Override
+  public void loadMovieVideos() {
+    mRepository.getMovieVideos(mMovieId, new LoadMovieVideosCallback() {
+      @Override
+      public void onVideosLoaded(List<MovieVideo> movieVideos) {
+        mDetailView.showVideos(movieVideos);
+      }
 
+      @Override
+      public void onDataNotAvailable() {
+        mDetailView.hideVideos();
+      }
+    });
+  }
+
+  @Override
+  public void loadMovieReviews() {
+    mRepository.getMovieReviews(mMovieId, new LoadMovieReviewsCallback() {
+      @Override
+      public void onReviewLoaded(List<MovieReview> movieReviews) {
+        mDetailView.showReviews(movieReviews);
+      }
+
+      @Override
+      public void onDataNotAvailable() {
+        mDetailView.hideReviews();
+      }
+    });
+  }
+
+  @Override
+  public void openYoutube(String url) {
+    mDetailView.showYoutube(url);
+  }
+
+  @Override
+  public void openReview(String url) {
+    mDetailView.openReview(url);
+  }
 }
