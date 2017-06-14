@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -61,6 +62,9 @@ public class MoviesFragment extends Fragment implements MoviesContract.View, Mov
     setHasOptionsMenu(true);
 
     GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2, LinearLayoutManager.VERTICAL, false);
+
+    mRecyclerView.setAdapter(mMoviesAdapter);
+    mRecyclerView.setItemAnimator(new DefaultItemAnimator());
     mRecyclerView.setLayoutManager(gridLayoutManager);
     mRecyclerView.addOnScrollListener(new EndlessScrolling(gridLayoutManager) {
       @Override
@@ -68,8 +72,6 @@ public class MoviesFragment extends Fragment implements MoviesContract.View, Mov
         mPresenter.loadMore(currentPage);
       }
     });
-    mRecyclerView.setAdapter(mMoviesAdapter);
-
     return view;
 
   }

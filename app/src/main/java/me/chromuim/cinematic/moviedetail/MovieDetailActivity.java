@@ -20,6 +20,8 @@ import me.chromuim.cinematic.Injection;
 import me.chromuim.cinematic.R;
 import me.chromuim.cinematic.core.api.Constants;
 import me.chromuim.cinematic.data.Movie;
+import me.chromuim.cinematic.data.MovieLoader;
+import me.chromuim.cinematic.data.MoviesRepository;
 
 /**
  * Created by chromuim on 06.06.17.
@@ -75,7 +77,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
             .add(R.id.fragment_content, movieDetailFragment).commit();
       }
-      mPresenter = new MovieDetailPresenter(Injection.repositoryProvider(getApplicationContext()), movieDetailFragment, mMovie.getId());
+
+      MoviesRepository moviesRepository = Injection.repositoryProvider(getApplicationContext());
+      MovieLoader loader = new MovieLoader(getApplicationContext(), moviesRepository, mMovie.getId());
+      mPresenter = new MovieDetailPresenter(moviesRepository, movieDetailFragment, loader, getSupportLoaderManager(), mMovie.getId());
     }
 
     setToolbar();

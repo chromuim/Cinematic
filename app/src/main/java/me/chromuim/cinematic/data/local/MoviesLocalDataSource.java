@@ -7,6 +7,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 import me.chromuim.cinematic.core.MoviesDataSource;
@@ -19,12 +21,17 @@ import me.chromuim.cinematic.data.local.MoviesContract.MoviesEntry;
 
 public class MoviesLocalDataSource implements MoviesDataSource {
 
+  private static final String TAG = "MoviesLocalDataSource";
+
   private static MoviesLocalDataSource INSTANCE;
   private final MoviesDbHelper mDbHelper;
+
+  private SQLiteDatabase mDb;
 
   private MoviesLocalDataSource(@NonNull Context context) {
     checkNotNull(context);
     mDbHelper = new MoviesDbHelper(context);
+    mDb = mDbHelper.getWritableDatabase();
   }
 
   public static MoviesLocalDataSource getInstance(@NonNull Context context) {
@@ -34,15 +41,51 @@ public class MoviesLocalDataSource implements MoviesDataSource {
     return INSTANCE;
   }
 
+  @Nullable
   @Override
-  public void getMovies(@NonNull LoadMoviesCallback callback) {
-    SQLiteDatabase database = mDbHelper.getReadableDatabase();
+  public List<Movie> getMovies(String sortType, int pageNo) {
     List<Movie> movieList = new ArrayList<>();
 
-    Cursor cursor = database.query(MoviesEntry.TABLE_NAME, null, null, null, null, null, null, null);
-    if (cursor != null && cursor.moveToFirst()) {
-      while (cursor.moveToNext()) {
-        int movieId = cursor.getInt(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_ID));
+    try {
+      Cursor cursor = mDb.query(MoviesEntry.TABLE_NAME, null, null, null, null, null, null, null);
+      if (cursor != null && cursor.getCount() > 0) {
+        while (cursor.moveToNext()) {
+          int movieId = cursor.getInt(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_ID));
+          String title = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_TITLE));
+          String overview = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_OVERVIEW));
+          String posterPath = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_POSTER_PATH));
+          String backDropPath = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_BACKDROP_PATH));
+          float average = cursor.getFloat(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_AVERAGE));
+          String releaseDate = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_RELEASE_DATE));
+
+          Movie movie = new Movie(movieId, title, overview, posterPath, backDropPath, average, releaseDate);
+          movieList.add(movie);
+        }
+      }
+      if (cursor != null) {
+        cursor.close();
+      }
+    } catch (IllegalArgumentException e) {
+      e.printStackTrace();
+      Log.e(TAG, "getMovies: ", e);
+    }
+
+    return movieList;
+  }
+
+  @Nullable
+  @Override
+  public Movie getMovie(int movieId) {
+    String selection = MoviesEntry.COLUMN_MOVIE_ID + " = ?";
+    String[] selectionArgs = new String[]{String.valueOf(movieId)};
+
+    Movie movie = null;
+    try {
+      Cursor cursor = mDb.query(MoviesEntry.TABLE_NAME, null, selection, selectionArgs, null, null, null, null);
+      movie = null;
+      if (cursor != null && cursor.getCount() > 0) {
+        cursor.moveToFirst();
+        int id = cursor.getInt(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_ID));
         String title = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_TITLE));
         String overview = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_OVERVIEW));
         String posterPath = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_POSTER_PATH));
@@ -50,58 +93,18 @@ public class MoviesLocalDataSource implements MoviesDataSource {
         float average = cursor.getFloat(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_AVERAGE));
         String releaseDate = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_RELEASE_DATE));
 
-        Movie movie = new Movie(movieId, title, overview, posterPath, backDropPath, average, releaseDate);
-        movieList.add(movie);
+        movie = new Movie(id, title, overview, posterPath, backDropPath, average, releaseDate);
       }
-    }
-    if (cursor != null) {
-      cursor.close();
-    }
-    database.close();
 
-    if (movieList.isEmpty()) {
-      callback.onDataNotAvailable();
-    } else {
-      callback.onMoviesLoaded(movieList);
-    }
-  }
-
-  @Override
-  public void getMovies(int currentPage, @NonNull LoadMoviesCallback callback) {
-
-  }
-
-  @Override
-  public void getMovie(int movieId, @NonNull LoadMovieCallback callback) {
-    SQLiteDatabase database = mDbHelper.getReadableDatabase();
-
-    String selection = MoviesEntry.COLUMN_MOVIE_ID + " = ?";
-    String[] selectionArgs = new String[]{String.valueOf(movieId)};
-
-    Cursor cursor = database.query(MoviesEntry.TABLE_NAME, null, selection, selectionArgs, null, null, null, null);
-    Movie movie = null;
-    if (cursor != null && cursor.moveToFirst()) {
-      int id = cursor.getInt(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_ID));
-      String title = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_TITLE));
-      String overview = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_OVERVIEW));
-      String posterPath = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_POSTER_PATH));
-      String backDropPath = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_BACKDROP_PATH));
-      float average = cursor.getFloat(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_AVERAGE));
-      String releaseDate = cursor.getString(cursor.getColumnIndexOrThrow(MoviesEntry.COLUMN_MOVIE_RELEASE_DATE));
-
-      movie = new Movie(id, title, overview, posterPath, backDropPath, average, releaseDate);
+      if (cursor != null) {
+        cursor.close();
+      }
+    } catch (IllegalArgumentException e) {
+      e.printStackTrace();
+      Log.e(TAG, "getMovie: ", e);
     }
 
-    if (cursor != null) {
-      cursor.close();
-    }
-    database.close();
-
-    if (movie != null) {
-      callback.onMovieLoaded(movie);
-    } else {
-      callback.onDataNotAvailable();
-    }
+    return movie;
   }
 
   @Override
@@ -117,26 +120,32 @@ public class MoviesLocalDataSource implements MoviesDataSource {
   @Override
   public void save(@NonNull Movie movie) {
     checkNotNull(movie);
-    SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
-    ContentValues values = new ContentValues();
-    values.put(MoviesEntry.COLUMN_MOVIE_ID, movie.getId());
-    values.put(MoviesEntry.COLUMN_MOVIE_TITLE, movie.getTitle());
-    values.put(MoviesEntry.COLUMN_MOVIE_OVERVIEW, movie.getOverview());
-    values.put(MoviesEntry.COLUMN_MOVIE_POSTER_PATH, movie.getPosterPath());
-    values.put(MoviesEntry.COLUMN_MOVIE_BACKDROP_PATH, movie.getBackdropPath());
-    values.put(MoviesEntry.COLUMN_MOVIE_AVERAGE, movie.getAverage());
-    values.put(MoviesEntry.COLUMN_MOVIE_RELEASE_DATE, movie.getReleaseDate());
+    try {
+      ContentValues values = new ContentValues();
+      values.put(MoviesEntry.COLUMN_MOVIE_ID, movie.getId());
+      values.put(MoviesEntry.COLUMN_MOVIE_TITLE, movie.getTitle());
+      values.put(MoviesEntry.COLUMN_MOVIE_OVERVIEW, movie.getOverview());
+      values.put(MoviesEntry.COLUMN_MOVIE_POSTER_PATH, movie.getPosterPath());
+      values.put(MoviesEntry.COLUMN_MOVIE_BACKDROP_PATH, movie.getBackdropPath());
+      values.put(MoviesEntry.COLUMN_MOVIE_AVERAGE, movie.getAverage());
+      values.put(MoviesEntry.COLUMN_MOVIE_RELEASE_DATE, movie.getReleaseDate());
 
-    database.insert(MoviesEntry.TABLE_NAME, null, values);
-    database.close();
+      mDb.insert(MoviesEntry.TABLE_NAME, null, values);
+    } catch (Exception e) {
+      e.printStackTrace();
+      Log.e(TAG, "save: ", e);
+    }
   }
 
   @Override
   public void deleteAll() {
-    SQLiteDatabase database = mDbHelper.getWritableDatabase();
-    database.delete(MoviesEntry.TABLE_NAME, null, null);
-    database.close();
+    try {
+      mDb.delete(MoviesEntry.TABLE_NAME, null, null);
+    } catch (Exception e) {
+      e.printStackTrace();
+      Log.e(TAG, "deleteAll: ", e);
+    }
   }
 
   @Override

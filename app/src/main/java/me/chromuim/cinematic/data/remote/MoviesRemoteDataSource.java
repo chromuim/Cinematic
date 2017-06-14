@@ -1,6 +1,8 @@
 package me.chromuim.cinematic.data.remote;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import java.io.IOException;
 import java.util.List;
 import me.chromuim.cinematic.core.MoviesDataSource;
 import me.chromuim.cinematic.core.api.Constants;
@@ -39,19 +41,18 @@ public class MoviesRemoteDataSource implements MoviesDataSource {
     return INSTANCE;
   }
 
+
+  @Nullable
   @Override
-  public void getMovies(@NonNull LoadMoviesCallback callback) {
-//    loadMovies(Constants.SORT_POPULARITY,, callback);
+  public List<Movie> getMovies(String sortType, int pageNo) {
+    return loadMovies(Constants.SORT_POPULARITY, pageNo);
   }
 
-  @Override
-  public void getMovies(int currentPage, @NonNull LoadMoviesCallback callback) {
-    loadMovies(Constants.SORT_POPULARITY, currentPage, callback);
-  }
 
+  @Nullable
   @Override
-  public void getMovie(int movieId, @NonNull LoadMovieCallback callback) {
-
+  public Movie getMovie(int movieId) {
+    return null;
   }
 
   @Override
@@ -111,22 +112,19 @@ public class MoviesRemoteDataSource implements MoviesDataSource {
 
   }
 
-  private void loadMovies(@NonNull String sortType, int pageNo, @NonNull LoadMoviesCallback callback) {
+  @Nullable
+  private List<Movie> loadMovies(@NonNull String sortType, int pageNo) {
     Call<ResponseList<Movie>> movies = mClient.loadMovies(sortType, pageNo);
-    movies.enqueue(new Callback<ResponseList<Movie>>() {
-      @Override
-      public void onResponse(Call<ResponseList<Movie>> call, Response<ResponseList<Movie>> response) {
-        List<Movie> moviesList = response.body().getResults();
-        if (moviesList.isEmpty()) {
-          callback.onDataNotAvailable();
-        }
-        callback.onMoviesLoaded(moviesList);
+    List<Movie> movieList = null;
+    try {
+      Response<ResponseList<Movie>> response = movies.execute();
+      if (response.body() != null) {
+        movieList = response.body().getResults();
       }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
-      @Override
-      public void onFailure(Call<ResponseList<Movie>> call, Throwable t) {
-        callback.onDataNotAvailable();
-      }
-    });
+    return movieList;
   }
 }
