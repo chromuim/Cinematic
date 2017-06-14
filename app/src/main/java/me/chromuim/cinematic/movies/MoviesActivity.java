@@ -13,6 +13,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.chromuim.cinematic.Injection;
 import me.chromuim.cinematic.R;
+import me.chromuim.cinematic.core.api.Constants;
+import me.chromuim.cinematic.data.MoviesLoader;
+import me.chromuim.cinematic.data.MoviesRepository;
 
 /**
  * Created by chromuim on 14.05.17.
@@ -52,8 +55,9 @@ public class MoviesActivity extends AppCompatActivity {
       fm.beginTransaction().add(R.id.movies_grid_layout_container, fragment).commit();
     }
 
-    mMoviesPresenter = new MoviesPresenter(Injection.repositoryProvider(getApplicationContext()), fragment);
-
+    MoviesRepository moviesRepository = Injection.repositoryProvider(getApplicationContext());
+    MoviesLoader moviesLoader = new MoviesLoader(getApplicationContext(), moviesRepository, Constants.SORT_POPULARITY, 1);
+    mMoviesPresenter = new MoviesPresenter(getApplicationContext(),moviesRepository, fragment, moviesLoader, getSupportLoaderManager());
   }
 
   @Override

@@ -22,12 +22,17 @@ public class MoviesRepository implements MoviesDataSource {
   private static MoviesRepository INSTANCE = null;
 
   private final MoviesDataSource mLocalDataSource;
-
   private final MoviesDataSource mRemoteDataSource;
-  private boolean mCacheIsDirty = false;
 
   @VisibleForTesting
   /*package*/ Map<Integer, Movie> mCachedMovies;
+  private List<MoviesRepositoryObserver> mObservers = new ArrayList<>();
+
+  public void setCacheIsDirty(boolean cacheIsDirty) {
+    mCacheIsDirty = cacheIsDirty;
+  }
+
+  private boolean mCacheIsDirty;
 
   private MoviesRepository(@NonNull MoviesDataSource localDataSource,
       @NonNull MoviesDataSource remoteDataSource) {
@@ -46,83 +51,179 @@ public class MoviesRepository implements MoviesDataSource {
     INSTANCE = null;
   }
 
-  @Override
-  public void getMovies(@NonNull final LoadMoviesCallback callback) {
-    checkNotNull(callback);
+  public void addContentObserver(MoviesRepositoryObserver observer) {
+    if (!mObservers.contains(observer)) {
+      mObservers.add(observer);
+    }
+  }
 
-    if (mCachedMovies != null && !mCacheIsDirty) {
-      callback.onMoviesLoaded(new ArrayList<>(mCachedMovies.values()));
+  public void removeContentObserver(MoviesRepositoryObserver observer) {
+    if (mObservers.contains(observer)) {
+      mObservers.remove(observer);
+    }
+  }
+
+  private void notifyContentObserver() {
+    for (MoviesRepositoryObserver observer : mObservers) {
+      observer.onMoviesChanged();
+    }
+  }
+
+  @Nullable
+  @Override
+  public List<Movie> getMovies(String sortType, int pageNo) {
+    List<Movie> movies = null;
+
+    if (!mCacheIsDirty) {
+      if (mCachedMovies != null) {
+        return getCachedMovies();
+      } else {
+        // get the movies from cache if available
+        movies = mLocalDataSource.getMovies(sortType, pageNo);
+      }
+    }
+
+    if (movies == null || movies.isEmpty()) {
+      movies = mRemoteDataSource.getMovies(sortType, pageNo);
+      saveMoviesInLocalDataSource(movies);
+    }
+
+    processLoadedMovies(movies);
+    return getCachedMovies();
+  }
+
+  public List<Movie> getCachedMovies() {
+    return mCachedMovies == null ? null : new ArrayList<>(mCachedMovies.values());
+  }
+
+  public Movie getCachedMovie(int movieId) {
+    return mCachedMovies.get(movieId);
+  }
+
+  public boolean isCacheAvailable() {
+    return mCachedMovies != null && !mCacheIsDirty;
+  }
+
+  private void saveMoviesInLocalDataSource(List<Movie> movies) {
+    if (movies != null) {
+      for (Movie movie : movies) {
+        mLocalDataSource.save(movie);
+      }
+    }
+  }
+
+  private void processLoadedMovies(List<Movie> movies) {
+    if (movies == null) {
+      mCachedMovies = null;
+      mCacheIsDirty = false;
       return;
     }
 
-    if (mCacheIsDirty) {
-      //fetch new data
-      loadFromRemote(1, callback);
-    } else {
-      mLocalDataSource.getMovies(new LoadMoviesCallback() {
-        @Override
-        public void onMoviesLoaded(List<Movie> movies) {
-          refreshCache(movies);
-          callback.onMoviesLoaded(new ArrayList<>(mCachedMovies.values()));
-        }
+    if (mCachedMovies == null) {
+      mCachedMovies = new LinkedHashMap<>();
+    }
+//    mCachedMovies.clear();
+    for (Movie movie : movies) {
+      mCachedMovies.put(movie.getId(), movie);
+    }
+    mCacheIsDirty = false;
+  }
 
-        @Override
-        public void onDataNotAvailable() {
-          loadFromRemote(1, callback);
-        }
-      });
+  @Nullable
+  @Override
+  public Movie getMovie(int movieId) {
+    checkNotNull(movieId);
+
+    Movie cachedMovie = getMovieById(movieId);
+    if (cachedMovie != null) {
+      return cachedMovie;
     }
 
-  }
-
-  @Override
-  public void getMovies(int currentPage, @NonNull LoadMoviesCallback callback) {
-    loadFromRemote(currentPage, callback);
-  }
-
-  @Override
-  public void getMovie(final int movieId, @NonNull final LoadMovieCallback callback) {
-    checkNotNull(callback);
-
-    Movie retrievedMovie = getMovieById(movieId);
-    if (retrievedMovie != null) {
-      callback.onMovieLoaded(retrievedMovie);
-      return;
+    Movie movie = mLocalDataSource.getMovie(movieId);
+    if (movie == null) {
+      movie = mRemoteDataSource.getMovie(movieId);
     }
 
-    // data not found in cache.. so load it from local / remote
-    mLocalDataSource.getMovie(movieId, new LoadMovieCallback() {
-      @Override
-      public void onMovieLoaded(Movie movie) {
-        if (mCachedMovies == null) {
-          mCachedMovies = new LinkedHashMap<>();
-        }
-        mCachedMovies.put(movieId, movie);
-        callback.onMovieLoaded(movie);
-      }
-
-      @Override
-      public void onDataNotAvailable() {
-        //request the date from remote
-
-        mRemoteDataSource.getMovie(movieId, new LoadMovieCallback() {
-          @Override
-          public void onMovieLoaded(Movie movie) {
-            if (mCachedMovies == null) {
-              mCachedMovies = new LinkedHashMap<>();
-            }
-            mCachedMovies.put(movieId, movie);
-            callback.onMovieLoaded(movie);
-          }
-
-          @Override
-          public void onDataNotAvailable() {
-            callback.onDataNotAvailable();
-          }
-        });
-      }
-    });
+    return movie;
   }
+
+  //  @Override
+//  public void getMovies(@NonNull final LoadMoviesCallback callback) {
+//    checkNotNull(callback);
+//
+//    if (mCachedMovies != null && !mCacheIsDirty) {
+//      callback.onMoviesLoaded(new ArrayList<>(mCachedMovies.values()));
+//      return;
+//    }
+//
+//    if (mCacheIsDirty) {
+//      //fetch new data
+//      loadFromRemote(1, callback);
+//    } else {
+//      mLocalDataSource.getMovies(new LoadMoviesCallback() {
+//        @Override
+//        public void onMoviesLoaded(List<Movie> movies) {
+//          refreshCache(movies);
+//          callback.onMoviesLoaded(new ArrayList<>(mCachedMovies.values()));
+//        }
+//
+//        @Override
+//        public void onDataNotAvailable() {
+//          loadFromRemote(1, callback);
+//        }
+//      });
+//    }
+//
+//  }
+//
+//  @Override
+//  public void getMovies(int currentPage, @NonNull LoadMoviesCallback callback) {
+//    loadFromRemote(currentPage, callback);
+//  }
+//
+//  @Override
+//  public void getMovie(final int movieId, @NonNull final LoadMovieCallback callback) {
+//    checkNotNull(callback);
+//
+//    Movie retrievedMovie = getMovieById(movieId);
+//    if (retrievedMovie != null) {
+//      callback.onMovieLoaded(retrievedMovie);
+//      return;
+//    }
+//
+//    // data not found in cache.. so load it from local / remote
+//    mLocalDataSource.getMovie(movieId, new LoadMovieCallback() {
+//      @Override
+//      public void onMovieLoaded(Movie movie) {
+//        if (mCachedMovies == null) {
+//          mCachedMovies = new LinkedHashMap<>();
+//        }
+//        mCachedMovies.put(movieId, movie);
+//        callback.onMovieLoaded(movie);
+//      }
+//
+//      @Override
+//      public void onDataNotAvailable() {
+//        //request the date from remote
+//
+//        mRemoteDataSource.getMovie(movieId, new LoadMovieCallback() {
+//          @Override
+//          public void onMovieLoaded(Movie movie) {
+//            if (mCachedMovies == null) {
+//              mCachedMovies = new LinkedHashMap<>();
+//            }
+//            mCachedMovies.put(movieId, movie);
+//            callback.onMovieLoaded(movie);
+//          }
+//
+//          @Override
+//          public void onDataNotAvailable() {
+//            callback.onDataNotAvailable();
+//          }
+//        });
+//      }
+//    });
+//  }
 
   @Override
   public void getMovieVideos(int movieId, @NonNull LoadMovieVideosCallback callback) {
@@ -171,11 +272,14 @@ public class MoviesRepository implements MoviesDataSource {
       mCachedMovies = new LinkedHashMap<>();
     }
     mCachedMovies.clear();
+
+    notifyContentObserver();
   }
 
   @Override
   public void refreshAll() {
     mCacheIsDirty = true;
+    notifyContentObserver();
   }
 
   @Override
@@ -189,41 +293,9 @@ public class MoviesRepository implements MoviesDataSource {
       mCachedMovies = new LinkedHashMap<>();
     }
     mCachedMovies.put(movie.getId(), movie);
-  }
 
-  private void loadFromRemote(int currentPage, final LoadMoviesCallback callback) {
-    mRemoteDataSource.getMovies(currentPage, new LoadMoviesCallback() {
-      @Override
-      public void onMoviesLoaded(List<Movie> movies) {
-        refreshCache(movies);
-        refreshLocalDataSource(movies);
-        callback.onMoviesLoaded(new ArrayList<>(mCachedMovies.values()));
-      }
-
-      @Override
-      public void onDataNotAvailable() {
-        callback.onDataNotAvailable();
-      }
-    });
-  }
-
-  private void refreshCache(List<Movie> movies) {
-    if (mCachedMovies == null) {
-      mCachedMovies = new LinkedHashMap<>();
-    }
-//    mCachedMovies.clear();
-    for (Movie movie : movies) {
-      mCachedMovies.put(movie.getId(), movie);
-    }
-    mCacheIsDirty = false;
-  }
-
-  private void refreshLocalDataSource(List<Movie> movies) {
-    mLocalDataSource.deleteAll();
-
-    for (Movie movie : movies) {
-      mLocalDataSource.save(movie);
-    }
+    // update the UI.
+    notifyContentObserver();
   }
 
   @Nullable
@@ -234,5 +306,10 @@ public class MoviesRepository implements MoviesDataSource {
       return mCachedMovies.get(movieId);
     }
 
+  }
+
+  public interface MoviesRepositoryObserver {
+
+    void onMoviesChanged();
   }
 }

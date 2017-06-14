@@ -54,6 +54,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MovieHolder> {
   public void onBindViewHolder(MovieHolder holder, int position) {
     String moviePath = getItem(position).getPosterPath();
     String fullPath = Constants.IMAGE_BASE_URL + Constants.IMAGE_SIZE + moviePath;
+    Picasso.with(mContext).setIndicatorsEnabled(true);
     Picasso.with(mContext).load(fullPath).into(holder.mImageView);
   }
 

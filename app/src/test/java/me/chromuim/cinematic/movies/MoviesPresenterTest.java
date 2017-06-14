@@ -40,13 +40,13 @@ public class MoviesPresenterTest {
   @Before
   public void setup() {
     MockitoAnnotations.initMocks(this);
-    mMoviesPresenter = new MoviesPresenter(mMoviesRepository, mMoviesView);
+    mMoviesPresenter = new MoviesPresenter(mMoviesRepository, mMoviesView, moviesLoader, loaderManager);
   }
 
   @Test
   public void createPresenterAndSetItToView() {
     // when presenter is created
-    mMoviesPresenter = new MoviesPresenter(mMoviesRepository, mMoviesView);
+    mMoviesPresenter = new MoviesPresenter(mMoviesRepository, mMoviesView, moviesLoader, loaderManager);
 
     //then this presenter will be set to the View
     verify(mMoviesView).setPresenter(mMoviesPresenter);

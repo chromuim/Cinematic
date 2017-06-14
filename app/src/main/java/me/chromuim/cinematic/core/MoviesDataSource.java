@@ -1,6 +1,7 @@
 package me.chromuim.cinematic.core;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import java.util.List;
 import me.chromuim.cinematic.core.api.MovieReview;
 import me.chromuim.cinematic.core.api.MovieVideo;
@@ -11,21 +12,6 @@ import me.chromuim.cinematic.data.Movie;
  */
 
 public interface MoviesDataSource {
-
-  interface LoadMoviesCallback {
-
-    void onMoviesLoaded(List<Movie> movies);
-
-    void onDataNotAvailable();
-  }
-
-  interface LoadMovieCallback {
-
-    void onMovieLoaded(Movie movie);
-
-    void onDataNotAvailable();
-  }
-
 
   interface LoadMovieVideosCallback {
 
@@ -41,11 +27,11 @@ public interface MoviesDataSource {
     void onDataNotAvailable();
   }
 
-  void getMovies(@NonNull LoadMoviesCallback callback);
+  @Nullable
+  List<Movie> getMovies(String sortType, int pageNo);
 
-  void getMovies(int currentPage, @NonNull LoadMoviesCallback callback);
-
-  void getMovie(int movieId, @NonNull LoadMovieCallback callback);
+  @Nullable
+  Movie getMovie(int movieId);
 
   void getMovieVideos(int movieId, @NonNull LoadMovieVideosCallback callback);
 

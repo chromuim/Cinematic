@@ -2,11 +2,13 @@ package me.chromuim.cinematic.moviedetail;
 
 import static com.google.gson.internal.$Gson$Preconditions.checkNotNull;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import com.google.common.base.Strings;
 import java.util.List;
 import java.util.Locale;
-import me.chromuim.cinematic.core.MoviesDataSource.LoadMovieCallback;
 import me.chromuim.cinematic.core.MoviesDataSource.LoadMovieReviewsCallback;
 import me.chromuim.cinematic.core.MoviesDataSource.LoadMovieVideosCallback;
 import me.chromuim.cinematic.core.Utils;
@@ -14,23 +16,35 @@ import me.chromuim.cinematic.core.api.Constants;
 import me.chromuim.cinematic.core.api.MovieReview;
 import me.chromuim.cinematic.core.api.MovieVideo;
 import me.chromuim.cinematic.data.Movie;
+import me.chromuim.cinematic.data.MovieLoader;
 import me.chromuim.cinematic.data.MoviesRepository;
+import me.chromuim.cinematic.moviedetail.MovieDetailContract.View;
 
 /**
  * Created by chromuim on 06.06.17.
  */
 
-public class MovieDetailPresenter implements MovieDetailContract.Presenter {
+public class MovieDetailPresenter implements MovieDetailContract.Presenter, LoaderManager.LoaderCallbacks<Movie> {
+
+  private static final int LOADER_MOVIE = 222;
 
   private final MoviesRepository mRepository;
 
   private final MovieDetailContract.View mDetailView;
 
+  private MovieLoader mMovieLoader;
+
+  private LoaderManager mLoaderManager;
+
   private final int mMovieId;
 
-  public MovieDetailPresenter(@NonNull MoviesRepository repository, @NonNull MovieDetailContract.View view, int movieId) {
+  public MovieDetailPresenter(@NonNull MoviesRepository repository, @NonNull View view,
+      @NonNull MovieLoader movieLoader, @NonNull LoaderManager loaderManager, int movieId) {
     mRepository = checkNotNull(repository);
     mDetailView = checkNotNull(view);
+    mMovieLoader = checkNotNull(movieLoader);
+    mLoaderManager = checkNotNull(loaderManager);
+
     mMovieId = movieId;
 
     mDetailView.setPresenter(this);
@@ -38,29 +52,7 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter {
 
   @Override
   public void start() {
-    openMovieDetail();
-  }
-
-  private void openMovieDetail() {
-    if (mMovieId == 0) {
-      mDetailView.showNoMovieDetailInformation();
-      return;
-    }
-    mRepository.getMovie(mMovieId, new LoadMovieCallback() {
-      @Override
-      public void onMovieLoaded(Movie movie) {
-        if (movie == null) {
-          mDetailView.showNoMovieDetailInformation();
-        } else {
-          showMovie(movie);
-        }
-      }
-
-      @Override
-      public void onDataNotAvailable() {
-        mDetailView.showNoMovieDetailInformation();
-      }
-    });
+    mLoaderManager.initLoader(LOADER_MOVIE, null, this);
   }
 
   private void showMovie(Movie movie) {
@@ -127,5 +119,28 @@ public class MovieDetailPresenter implements MovieDetailContract.Presenter {
   @Override
   public void openReview(String url) {
     mDetailView.openReview(url);
+  }
+
+  //Loader
+  @Override
+  public Loader<Movie> onCreateLoader(int id, Bundle args) {
+    if (mMovieId == 0) {
+      return null;
+    }
+    return mMovieLoader;
+  }
+
+  @Override
+  public void onLoadFinished(Loader<Movie> loader, Movie data) {
+    if (data != null) {
+      showMovie(data);
+    } else {
+      mDetailView.showNoMovieDetailInformation();
+    }
+  }
+
+  @Override
+  public void onLoaderReset(Loader<Movie> loader) {
+    //nothing
   }
 }
