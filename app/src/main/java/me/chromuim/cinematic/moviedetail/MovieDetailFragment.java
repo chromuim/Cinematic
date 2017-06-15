@@ -119,8 +119,6 @@ public class MovieDetailFragment extends Fragment implements MovieDetailContract
   public void onResume() {
     super.onResume();
     mPresenter.start();
-    mPresenter.loadMovieVideos();
-    mPresenter.loadMovieReviews();
   }
 
   // Contract Methods.

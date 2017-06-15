@@ -23,7 +23,7 @@ public class MoviesPresenter implements MoviesContract.Presenter, LoaderManager.
 
   private static final String TAG = "MoviesPresenter";
 
-  private final static int LOADER_MOVIES = 111;
+  private final static int LOADER_MOVIES = 1;
 
   private final MoviesRepository mMoviesRepository;
 

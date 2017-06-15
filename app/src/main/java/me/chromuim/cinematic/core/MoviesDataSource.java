@@ -13,29 +13,17 @@ import me.chromuim.cinematic.data.Movie;
 
 public interface MoviesDataSource {
 
-  interface LoadMovieVideosCallback {
-
-    void onVideosLoaded(List<MovieVideo> movieVideos);
-
-    void onDataNotAvailable();
-  }
-
-  interface LoadMovieReviewsCallback {
-
-    void onReviewLoaded(List<MovieReview> movieReviews);
-
-    void onDataNotAvailable();
-  }
-
   @Nullable
   List<Movie> getMovies(String sortType, int pageNo);
 
   @Nullable
   Movie getMovie(int movieId);
 
-  void getMovieVideos(int movieId, @NonNull LoadMovieVideosCallback callback);
+  @Nullable
+  List<MovieVideo> getMovieVideos(int movieId);
 
-  void getMovieReviews(int movieId, @NonNull LoadMovieReviewsCallback callback);
+  @Nullable
+  List<MovieReview> getMovieReviews(int movieId);
 
   void save(@NonNull Movie movie);
 

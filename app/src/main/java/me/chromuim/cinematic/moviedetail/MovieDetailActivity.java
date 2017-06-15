@@ -21,6 +21,8 @@ import me.chromuim.cinematic.R;
 import me.chromuim.cinematic.core.api.Constants;
 import me.chromuim.cinematic.data.Movie;
 import me.chromuim.cinematic.data.MovieLoader;
+import me.chromuim.cinematic.data.MovieReviewsLoader;
+import me.chromuim.cinematic.data.MovieVideosLoader;
 import me.chromuim.cinematic.data.MoviesRepository;
 
 /**
@@ -80,7 +82,10 @@ public class MovieDetailActivity extends AppCompatActivity {
 
       MoviesRepository moviesRepository = Injection.repositoryProvider(getApplicationContext());
       MovieLoader loader = new MovieLoader(getApplicationContext(), moviesRepository, mMovie.getId());
-      mPresenter = new MovieDetailPresenter(moviesRepository, movieDetailFragment, loader, getSupportLoaderManager(), mMovie.getId());
+      MovieVideosLoader movieVideosLoader = new MovieVideosLoader(getApplicationContext(), moviesRepository, mMovie.getId());
+      MovieReviewsLoader movieReviewsLoader = new MovieReviewsLoader(getApplicationContext(), moviesRepository, mMovie.getId());
+      mPresenter = new MovieDetailPresenter(moviesRepository, movieDetailFragment,
+          loader, movieVideosLoader, movieReviewsLoader, getSupportLoaderManager(), mMovie.getId());
     }
 
     setToolbar();

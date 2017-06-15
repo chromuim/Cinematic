@@ -45,10 +45,6 @@ public interface MovieDetailContract {
 
   interface Presenter extends BasePresenter {
 
-    void loadMovieVideos();
-
-    void loadMovieReviews();
-
     void openYoutube(String url);
 
     void openReview(String url);

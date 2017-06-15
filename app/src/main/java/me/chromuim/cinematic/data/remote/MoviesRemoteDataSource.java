@@ -15,7 +15,6 @@ import me.chromuim.cinematic.core.api.MoviesRetrofitClient;
 import me.chromuim.cinematic.core.api.ResponseList;
 import me.chromuim.cinematic.data.Movie;
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -55,46 +54,37 @@ public class MoviesRemoteDataSource implements MoviesDataSource {
     return null;
   }
 
+  @Nullable
   @Override
-  public void getMovieVideos(int movieId, @NonNull LoadMovieVideosCallback callback) {
+  public List<MovieVideo> getMovieVideos(int movieId) {
     Call<MovieVideosResponse> movieVideosResponseCall = mClient.loadMovieDetailVideos(movieId);
-    movieVideosResponseCall.enqueue(new Callback<MovieVideosResponse>() {
-      @Override
-      public void onResponse(Call<MovieVideosResponse> call, Response<MovieVideosResponse> response) {
-        List<MovieVideo> movieVideos = response.body().getResults();
-        if (movieVideos.isEmpty()) {
-          callback.onDataNotAvailable();
-        } else {
-          callback.onVideosLoaded(movieVideos);
-        }
+    List<MovieVideo> result = null;
+    try {
+      Response<MovieVideosResponse> response = movieVideosResponseCall.execute();
+      if (response.body() != null) {
+        result = response.body().getResults();
       }
+    } catch (IOException e) {
+      e.printStackTrace();
 
-      @Override
-      public void onFailure(Call<MovieVideosResponse> call, Throwable t) {
-        callback.onDataNotAvailable();
-      }
-    });
+    }
+    return result;
   }
 
+  @Nullable
   @Override
-  public void getMovieReviews(int movieId, @NonNull LoadMovieReviewsCallback callback) {
+  public List<MovieReview> getMovieReviews(int movieId) {
     Call<MovieReviewResponse> movieReviewReposeCall = mClient.loadMovieDetailReviews(movieId);
-    movieReviewReposeCall.enqueue(new Callback<MovieReviewResponse>() {
-      @Override
-      public void onResponse(Call<MovieReviewResponse> call, Response<MovieReviewResponse> response) {
-        List<MovieReview> movieReviews = response.body().getResults();
-        if (movieReviews.isEmpty()) {
-          callback.onDataNotAvailable();
-        } else {
-          callback.onReviewLoaded(movieReviews);
-        }
+    List<MovieReview> results = null;
+    try {
+      Response<MovieReviewResponse> response = movieReviewReposeCall.execute();
+      if (response.body() != null) {
+        results = response.body().getResults();
       }
-
-      @Override
-      public void onFailure(Call<MovieReviewResponse> call, Throwable t) {
-        callback.onDataNotAvailable();
-      }
-    });
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return results;
   }
 
   @Override

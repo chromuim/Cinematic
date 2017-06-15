@@ -225,43 +225,16 @@ public class MoviesRepository implements MoviesDataSource {
 //    });
 //  }
 
+  @Nullable
   @Override
-  public void getMovieVideos(int movieId, @NonNull LoadMovieVideosCallback callback) {
+  public List<MovieVideo> getMovieVideos(int movieId) {
     //get the data from remote for now
-    mRemoteDataSource.getMovieVideos(movieId, new LoadMovieVideosCallback() {
-      @Override
-      public void onVideosLoaded(List<MovieVideo> movieVideos) {
-        if (movieVideos == null) {
-          callback.onDataNotAvailable();
-        } else {
-          callback.onVideosLoaded(movieVideos);
-        }
-      }
-
-      @Override
-      public void onDataNotAvailable() {
-        callback.onDataNotAvailable();
-      }
-    });
+    return mRemoteDataSource.getMovieVideos(movieId);
   }
 
   @Override
-  public void getMovieReviews(int movieId, @NonNull LoadMovieReviewsCallback callback) {
-    mRemoteDataSource.getMovieReviews(movieId, new LoadMovieReviewsCallback() {
-      @Override
-      public void onReviewLoaded(List<MovieReview> movieReviews) {
-        if (movieReviews == null || movieReviews.isEmpty()) {
-          callback.onDataNotAvailable();
-        } else {
-          callback.onReviewLoaded(movieReviews);
-        }
-      }
-
-      @Override
-      public void onDataNotAvailable() {
-        callback.onDataNotAvailable();
-      }
-    });
+  public List<MovieReview> getMovieReviews(int movieId) {
+    return mRemoteDataSource.getMovieReviews(movieId);
   }
 
   @Override
