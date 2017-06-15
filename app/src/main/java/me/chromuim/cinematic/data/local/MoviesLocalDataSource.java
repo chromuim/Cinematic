@@ -12,6 +12,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 import me.chromuim.cinematic.core.MoviesDataSource;
+import me.chromuim.cinematic.core.api.MovieReview;
+import me.chromuim.cinematic.core.api.MovieVideo;
 import me.chromuim.cinematic.data.Movie;
 import me.chromuim.cinematic.data.local.MoviesContract.MoviesEntry;
 
@@ -107,14 +109,18 @@ public class MoviesLocalDataSource implements MoviesDataSource {
     return movie;
   }
 
+  @Nullable
   @Override
-  public void getMovieVideos(int movieId, @NonNull LoadMovieVideosCallback callback) {
+  public List<MovieVideo> getMovieVideos(int movieId) {
     // empty for now , since i'm not saving videos in Db
+    return null;
   }
 
+  @Nullable
   @Override
-  public void getMovieReviews(int movieId, @NonNull LoadMovieReviewsCallback callback) {
+  public List<MovieReview> getMovieReviews(int movieId) {
     // nothing yet
+    return null;
   }
 
   @Override
